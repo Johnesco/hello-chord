@@ -1,0 +1,60 @@
+Porch
+The rain has chased you under the porch of a small stone church. Somewhere above, a bell tower waits for someone to give it a reason.
+
+> south
+You look out at the rain. The rain looks back. Not yet.
+
+> north
+Nave
+Rows of pews face a plain altar. A hymn board hangs on a pillar. A small door in the corner leads east to the vestry, and a ladder climbs to a hatch in the ceiling.
+
+> read board
+The board reads, in worn brass numerals and a scrap of paper:
+TODAY: NO HYMNS.
+RING THE RED, THEN THE WHITE, THEN THE BLUE.
+THE KEY IS ON THE HOOK.
+
+> up
+The hatch is locked.
+
+> east
+Vestry
+A cramped room smelling of candle wax and damp wool. An iron hook is screwed into the wall at eye height. The nave is back to the west.
+
+On the iron hook you see a brass key.
+
+> take key
+You take the brass key from the iron hook.
+
+> west
+Nave
+Rows of pews face a plain altar. A hymn board hangs on a pillar. A small door in the corner leads east to the vestry, and a ladder climbs to a hatch in the ceiling.
+
+> unlock hatch with key
+You unlock the hatch with the brass key.
+
+> open hatch
+You open the hatch.
+
+> up
+Bell Loft
+You climb through the hatch into the loft. Three ropes hang in a row, each rising into the dark toward a bell you cannot see.
+
+You have risen to the rank of a Sexton.
+
+> pull red rope
+You haul on the red rope. Far above, a deep bell answers: one low, round note that goes on longer than seems reasonable.
+
+> pull red rope
+The red rope is still swinging gently. Its bell has said its piece.
+
+> pull white rope
+You pull the white rope. A second bell rings out, higher, and the two notes hang together in the air.
+
+> score
+You have scored 10 out of 20, earning you the rank of a Sexton.
+
+> pull blue rope
+You pull the blue rope. The third bell joins the other two, and for a long moment the tower holds a single chord over the wet fields. Below, the rain eases. Hello, Chord.
+
+You have risen to the rank of a Bell-Ringer.

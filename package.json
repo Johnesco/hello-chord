@@ -1,0 +1,37 @@
+{
+  "name": "hello-chord",
+  "version": "0.1.0",
+  "description": "An interactive fiction adventure",
+  "private": true,
+  "scripts": {
+    "build": "sharpee build",
+    "build:browser": "sharpee build --browser",
+    "test": "sharpee test",
+    "play": "sharpee play"
+  },
+  "sharpee": {
+    "title": "hello-chord",
+    "author": "Anonymous"
+  },
+  "dependencies": {
+    "@sharpee/sharpee": "^5.0.0",
+    "@sharpee/chord": "^5.0.0",
+    "@sharpee/story-loader": "^5.0.0",
+    "@sharpee/engine": "^5.0.0",
+    "@sharpee/parser-en-us": "^5.0.0",
+    "@sharpee/lang-en-us": "^5.0.0",
+    "@sharpee/stdlib": "^5.0.0",
+    "@sharpee/platform-browser": "^5.0.0"
+  },
+  "devDependencies": {
+    "@sharpee/devkit": "^5.3.0",
+    "esbuild": "^0.20.0"
+  },
+  "keywords": [
+    "interactive-fiction",
+    "sharpee",
+    "chord"
+  ],
+  "author": "Anonymous",
+  "license": "MIT"
+}

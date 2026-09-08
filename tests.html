@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hello Chord &mdash; tests</title>
+<style>
+:root { --bg: #101418; --fg: #d8dee6; --muted: #7f8b99; --line: #232b35; --pass: #6fcf7f; --fail: #ff7a7a; --cmd: #8fd3ff; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 Georgia, "Times New Roman", serif; }
+.wrap { max-width: 860px; margin: 0 auto; padding: 24px 20px 60px; }
+header { border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-bottom: 20px; color: var(--muted); font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
+header strong { color: var(--fg); font-size: 18px; display: block; font-family: Georgia, serif; }
+.summary { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 8px; }
+.status { font-weight: bold; }
+.status.PASS { color: var(--pass); } .status.FAIL { color: var(--fail); }
+h2 { font-size: 14px; font-family: ui-monospace, Consolas, monospace; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; margin: 28px 0 10px; }
+.card { border-left: 3px solid var(--line); padding: 6px 0 6px 14px; margin: 0 0 14px; }
+.card.fail { border-left-color: var(--fail); }
+.cmd { font-family: ui-monospace, Consolas, monospace; color: var(--cmd); }
+pre.out { white-space: pre-wrap; margin: 6px 0; font: inherit; color: var(--fg); opacity: .92; }
+ul.asserts { list-style: none; margin: 4px 0 0; padding: 0; font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
+ul.asserts li.pass { color: var(--pass); } ul.asserts li.fail { color: var(--fail); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <strong>Hello Chord &mdash; test report</strong>
+  <div class="summary">
+    <span class="status PASS">PASS</span>
+    <span>19/19 cards</span>
+    <span>33/33 assertions</span>
+    <span>hello-chord.tests.json</span>
+    <span>Sharpee 5.3.0 · Chord 3.6.0</span>
+    <span>2026-09-07 20:22</span>
+  </div>
+</header>
+<section class="line"><h2>opening-porch</h2><article class="card pass"><div class="cmd">&#9989; &gt; opening</div><ul class="asserts"><li class="pass">&#10003; channel info.title is &quot;Hello Chord&quot;</li><li class="pass">&#10003; channel info.description is &quot;A locked loft, three bell ropes, and one chord to ring before the rain stops.&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; look</div><pre class="out">Porch
+The rain has chased you under the porch of a small stone church. Somewhere above, a bell tower waits for someone to give it a reason.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;Porch&quot;</li><li class="pass">&#10003; contains &quot;The rain has chased you under the porch of a small stone church.&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; south</div><pre class="out">You look out at the rain. The rain looks back. Not yet.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;You look out at the rain. The rain looks back. Not yet.&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; north</div><pre class="out">Nave
+Rows of pews face a plain altar. A hymn board hangs on a pillar. A small door in the corner leads east to the vestry, and a ladder climbs to a hatch in the ceiling.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;Nave&quot;</li><li class="pass">&#10003; contains &quot;A hymn board hangs on a pillar.&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; read board</div><pre class="out">The board reads, in worn brass numerals and a scrap of paper:
+TODAY: NO HYMNS.
+RING THE RED, THEN THE WHITE, THEN THE BLUE.
+THE KEY IS ON THE HOOK.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;RING THE RED, THEN THE WHITE, THEN THE BLUE.&quot;</li><li class="pass">&#10003; contains &quot;THE KEY IS ON THE HOOK.&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; up</div><pre class="out">The hatch is locked.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;The hatch is locked.&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; east</div><pre class="out">Vestry
+A cramped room smelling of candle wax and damp wool. An iron hook is screwed into the wall at eye height. The nave is back to the west.
+
+On the iron hook you see a brass key.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;Vestry&quot;</li><li class="pass">&#10003; contains &quot;On the iron hook you see a brass key.&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; take key</div><pre class="out">You take the brass key from the iron hook.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;You take the brass key from the iron hook.&quot;</li><li class="pass">&#10003; state player.inventory contains brass key</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; west</div><pre class="out">Nave
+Rows of pews face a plain altar. A hymn board hangs on a pillar. A small door in the corner leads east to the vestry, and a ladder climbs to a hatch in the ceiling.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;Nave&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; unlock hatch with key</div><pre class="out">You unlock the hatch with the brass key.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;You unlock the hatch with the brass key.&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; open hatch</div><pre class="out">You open the hatch.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;You open the hatch.&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; up</div><pre class="out">Bell Loft
+You climb through the hatch into the loft. Three ropes hang in a row, each rising into the dark toward a bell you cannot see.
+
+You have risen to the rank of a Sexton.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;Bell Loft&quot;</li><li class="pass">&#10003; contains &quot;Three ropes hang in a row&quot;</li><li class="pass">&#10003; contains &quot;You have risen to the rank of a Sexton.&quot;</li><li class="pass">&#10003; state player.location = Bell Loft</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; pull red rope</div><pre class="out">You haul on the red rope. Far above, a deep bell answers: one low, round note that goes on longer than seems reasonable.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;a deep bell answers&quot;</li><li class="pass">&#10003; state the red rope is pulled</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; pull red rope</div><pre class="out">The red rope is still swinging gently. Its bell has said its piece.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;Its bell has said its piece.&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; pull white rope</div><pre class="out">You pull the white rope. A second bell rings out, higher, and the two notes hang together in the air.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;A second bell rings out, higher&quot;</li><li class="pass">&#10003; state the white rope is pulled</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; score</div><pre class="out">You have scored 10 out of 20, earning you the rank of a Sexton.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;You have scored 10 out of 20&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; pull blue rope</div><pre class="out">You pull the blue rope. The third bell joins the other two, and for a long moment the tower holds a single chord over the wet fields. Below, the rain eases. Hello, Chord.
+
+You have risen to the rank of a Bell-Ringer.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;the tower holds a single chord&quot;</li><li class="pass">&#10003; contains &quot;Hello, Chord.&quot;</li><li class="pass">&#10003; contains &quot;You have risen to the rank of a Bell-Ringer.&quot;</li></ul></article></section><section class="line"><h2>bell-loft · pull white rope</h2><article class="card pass"><div class="cmd">&#9989; &gt; pull white rope</div><pre class="out">You give the white rope a tug, then stop. The hymn board was clear about the order: red first.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;The hymn board was clear about the order: red first.&quot;</li><li class="pass">&#10003; state the white rope is slack</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; pull blue rope</div><pre class="out">Your hand closes on the blue rope and hesitates. Red, then white, then blue. The board was specific.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;Red, then white, then blue. The board was specific.&quot;</li></ul></article></section>
+</div>
+
+<script src="theme-listener.js"></script>
+<script>
+ThemeListener.init({
+  buildCSS: function(g, sb) {
+    return 'body { background: ' + g.bodyBg + ' !important; color: ' + g.bufferFg + ' !important; }\n' +
+      'header, .meta { color: ' + g.gridFg + ' !important; border-color: ' + g.gridBg + ' !important; }\n' +
+      'pre, code { color: ' + g.bufferFg + ' !important; font-family: ' + g.monoFamily + ' !important; }\n' +
+      '.ln { color: ' + g.gridFg + ' !important; }\n' +
+      '.cmd { color: ' + g.inputFg + ' !important; }\n' +
+      '* { scrollbar-color: ' + sb.thumb + ' ' + sb.track + '; }\n';
+  },
+  dispatchResize: false
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,15 @@
+south
+north
+read board
+up
+east
+take key
+west
+unlock hatch with key
+open hatch
+up
+pull red rope
+pull red rope
+pull white rope
+score
+pull blue rope

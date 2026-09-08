@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "story": "hello-chord",
+  "seed": 42,
+  "cards": [
+    {
+      "type": "opening",
+      "assertions": {
+        "channels": [
+          { "id": "info.title", "is": "Hello Chord" },
+          { "id": "info.description", "is": "A locked loft, three bell ropes, and one chord to ring before the rain stops." }
+        ]
+      }
+    },
+    {
+      "type": "boot",
+      "assertions": { "contains": ["Porch", "The rain has chased you under the porch of a small stone church."] }
+    },
+    { "type": "turn", "command": "south",
+      "assertions": { "contains": ["You look out at the rain. The rain looks back. Not yet."] } },
+    { "type": "turn", "command": "north",
+      "assertions": { "contains": ["Nave", "A hymn board hangs on a pillar."] } },
+    { "type": "turn", "command": "read board",
+      "assertions": { "contains": ["RING THE RED, THEN THE WHITE, THEN THE BLUE.", "THE KEY IS ON THE HOOK."] } },
+    { "type": "turn", "command": "up",
+      "assertions": { "contains": ["The hatch is locked."] } },
+    { "type": "turn", "command": "east",
+      "assertions": { "contains": ["Vestry", "On the iron hook you see a brass key."] } },
+    { "type": "turn", "command": "take key",
+      "assertions": { "contains": ["You take the brass key from the iron hook."], "states": ["player.inventory contains brass key"] } },
+    { "type": "turn", "command": "west",
+      "assertions": { "contains": ["Nave"] } },
+    { "type": "turn", "command": "unlock hatch with key",
+      "assertions": { "contains": ["You unlock the hatch with the brass key."] } },
+    { "type": "turn", "command": "open hatch",
+      "assertions": { "contains": ["You open the hatch."] } },
+    { "type": "turn", "command": "up",
+      "assertions": { "contains": ["Bell Loft", "Three ropes hang in a row", "You have risen to the rank of a Sexton."], "states": ["player.location = Bell Loft"] },
+      "branches": [
+        { "branch": 1, "cards": [
+          { "type": "turn", "command": "pull white rope",
+            "assertions": { "contains": ["The hymn board was clear about the order: red first."], "states": ["the white rope is slack"] } },
+          { "type": "turn", "command": "pull blue rope",
+            "assertions": { "contains": ["Red, then white, then blue. The board was specific."] } }
+        ] }
+      ] },
+    { "type": "turn", "command": "pull red rope",
+      "assertions": { "contains": ["a deep bell answers"], "states": ["the red rope is pulled"] } },
+    { "type": "turn", "command": "pull red rope",
+      "assertions": { "contains": ["Its bell has said its piece."] } },
+    { "type": "turn", "command": "pull white rope",
+      "assertions": { "contains": ["A second bell rings out, higher"], "states": ["the white rope is pulled"] } },
+    { "type": "turn", "command": "score",
+      "assertions": { "contains": ["You have scored 10 out of 20"] } },
+    { "type": "turn", "command": "pull blue rope",
+      "assertions": { "contains": ["the tower holds a single chord", "Hello, Chord.", "You have risen to the rank of a Bell-Ringer."] } }
+  ]
+}
