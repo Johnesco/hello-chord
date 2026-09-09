@@ -5,68 +5,951 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hello Chord &mdash; tests</title>
 <style>
-:root { --bg: #101418; --fg: #d8dee6; --muted: #7f8b99; --line: #232b35; --pass: #6fcf7f; --fail: #ff7a7a; --cmd: #8fd3ff; }
+:root { --bg: #101418; --fg: #d8dee6; --muted: #7f8b99; --line: #232b35; --pass: #6fcf7f; --pass-bg: rgba(111,207,127,.12);
+  --fail: #ff7a7a; --fail-bg: rgba(255,122,122,.14); --warn: #e0b458; --accent: #8fd3ff; --code-bg: #161c23; --hover: #1a2129;
+  --hl-bg: rgba(255,232,138,.3); --hl-fg: #ffe88a; --room: #c49ee0; --ui-font: Georgia, "Times New Roman", serif; --mono: ui-monospace, Consolas, monospace; }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 Georgia, "Times New Roman", serif; }
-.wrap { max-width: 860px; margin: 0 auto; padding: 24px 20px 60px; }
-header { border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-bottom: 20px; color: var(--muted); font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
-header strong { color: var(--fg); font-size: 18px; display: block; font-family: Georgia, serif; }
-.summary { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 8px; }
-.status { font-weight: bold; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 var(--ui-font); }
+.wrap { max-width: 980px; margin: 0 auto; padding: 24px 20px 60px; }
+h1 { font-size: 20px; margin: 0 0 4px; }
+.subtitle { color: var(--muted); font: 13px var(--mono); margin-bottom: 14px; }
+.summary { display: flex; flex-wrap: wrap; gap: 12px 24px; border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px; margin-bottom: 10px; background: var(--code-bg); }
+.summary .item { display: flex; align-items: baseline; gap: 6px; }
+.summary .num { font: bold 18px var(--mono); }
+.summary .pass-num { color: var(--pass); } .summary .fail-num { color: var(--fail); }
+.summary .label { color: var(--muted); font: 12px var(--mono); text-transform: uppercase; letter-spacing: .06em; }
 .status.PASS { color: var(--pass); } .status.FAIL { color: var(--fail); }
-h2 { font-size: 14px; font-family: ui-monospace, Consolas, monospace; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; margin: 28px 0 10px; }
-.card { border-left: 3px solid var(--line); padding: 6px 0 6px 14px; margin: 0 0 14px; }
-.card.fail { border-left-color: var(--fail); }
-.cmd { font-family: ui-monospace, Consolas, monospace; color: var(--cmd); }
-pre.out { white-space: pre-wrap; margin: 6px 0; font: inherit; color: var(--fg); opacity: .92; }
-ul.asserts { list-style: none; margin: 4px 0 0; padding: 0; font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
-ul.asserts li.pass { color: var(--pass); } ul.asserts li.fail { color: var(--fail); }
+.games { font: 13px var(--mono); color: var(--muted); margin-bottom: 14px; display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin: 0 0 6px; font: 13px var(--mono); }
+.controls button, button.match-toggle { font: 12px var(--mono); color: var(--fg); background: var(--code-bg); border: 1px solid var(--line); border-radius: 4px; padding: 3px 8px; cursor: pointer; }
+.controls button:hover, button.match-toggle:hover { background: var(--hover); }
+.controls input[type=search] { font: 13px var(--mono); color: var(--fg); background: var(--code-bg); border: 1px solid var(--line); border-radius: 4px; padding: 4px 8px; min-width: 260px; }
+.controls label { display: flex; gap: 6px; align-items: center; cursor: pointer; }
+.controls .hint { color: var(--muted); font-size: 12px; }
+h2 { font-size: 13px; font-family: var(--mono); color: var(--muted); letter-spacing: .06em; text-transform: uppercase; margin: 24px 0 10px; }
+table.lines { border-collapse: collapse; width: 100%; font: 13px var(--mono); }
+table.lines th, table.lines td { text-align: left; padding: 4px 8px; border-bottom: 1px solid var(--line); }
+table.lines th { color: var(--muted); font-weight: normal; }
+table.lines th.num, table.lines td.num { text-align: right; }
+table.lines td.pass { color: var(--pass); } table.lines td.fail { color: var(--fail); }
+table.lines a, .line-note a, .fork a { color: var(--accent); text-decoration: none; }
+table.lines a:hover, .line-note a:hover, .fork a:hover { text-decoration: underline; }
+details.test { border: 1px solid var(--line); border-radius: 6px; margin: 0 0 12px; background: var(--code-bg); }
+summary { cursor: pointer; list-style: none; }
+summary::-webkit-details-marker { display: none; }
+summary.test-summary { display: flex; gap: 10px; align-items: center; padding: 8px 12px; font: 14px var(--mono); }
+summary.test-summary::before { content: "\25B8"; color: var(--muted); width: 1em; }
+details.test[open] > summary.test-summary::before { content: "\25BE"; }
+.glyph.pass { color: var(--pass); } .glyph.fail { color: var(--fail); } .glyph.skip { color: var(--muted); }
+.test-name { font-weight: bold; }
+.test-summary-meta { color: var(--muted); margin-left: auto; font-size: 12px; text-align: right; }
+.test-body { border-top: 1px solid var(--line); }
+.line-note { padding: 6px 12px; color: var(--muted); font: 12px var(--mono); border-bottom: 1px solid var(--line); }
+.line-note code { color: var(--accent); }
+ul.transcript { list-style: none; margin: 0; padding: 0; }
+li.turn { border-bottom: 1px solid var(--line); }
+li.turn:last-child { border-bottom: 0; }
+summary.turn-row { display: grid; grid-template-columns: 4.5em minmax(10em, 1fr) minmax(6em, auto) auto 5em; gap: 10px; align-items: baseline; padding: 5px 12px; font: 13px var(--mono); }
+summary.turn-row:hover { background: var(--hover); }
+details.turn-detail[data-status="fail"] > summary.turn-row { background: var(--fail-bg); }
+.turn-tcount { color: var(--muted); }
+.turn-cmd { color: var(--accent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.turn-room { color: var(--room); font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.turn-inv { color: var(--muted); font-size: 12px; text-align: right; }
+.turn-asserts { text-align: right; }
+.turn-asserts .pass, .fork .pass { color: var(--pass); } .turn-asserts .fail, .fork .fail { color: var(--fail); } .turn-asserts .skip { color: var(--muted); }
+.turn-body { padding: 6px 12px 10px 5.5em; }
+pre.turn-response { white-space: pre-wrap; margin: 4px 0 8px; font: inherit; color: var(--fg); }
+pre.turn-response.empty { color: var(--muted); font-style: italic; }
+.hl.hl-active { background: var(--hl-bg); color: var(--hl-fg); box-shadow: 0 0 0 1px var(--hl-fg); border-radius: 2px; }
+.hl.hl-active.hl-fail { background: var(--fail-bg); color: var(--fail); box-shadow: 0 0 0 1px var(--fail); }
+details.turn-extras > summary { font: 12px var(--mono); color: var(--muted); padding: 2px 0; }
+details.turn-extras > summary::before { content: "\25B8 "; }
+details.turn-extras[open] > summary::before { content: "\25BE "; }
+.turn-extras-body { padding: 4px 0 0 1em; }
+h4 { margin: 8px 0 4px; font: 12px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.note { color: var(--muted); font: 12px var(--mono); }
+ul.assertions { list-style: none; margin: 0; padding: 0; font: 13px var(--mono); }
+ul.assertions li { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; padding: 2px 0; }
+ul.assertions li.pass > .label::before { content: "\2713 "; color: var(--pass); }
+ul.assertions li.fail > .label::before { content: "\2717 "; color: var(--fail); }
+ul.assertions .kind { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; min-width: 7em; }
+ul.assertions .label { white-space: pre-wrap; }
+ul.assertions .message { flex-basis: 100%; color: var(--fail); padding-left: 7.7em; white-space: pre-wrap; }
+button.match-toggle.active { background: var(--hl-bg); color: var(--hl-fg); border-color: var(--hl-fg); }
+li.fail button.match-toggle.active { background: var(--fail-bg); color: var(--fail); border-color: var(--fail); }
+dl.kv { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; margin: 0; font: 13px var(--mono); }
+dl.kv dt { color: var(--muted); } dl.kv dd { margin: 0; }
+details.raw > summary { font: 12px var(--mono); color: var(--muted); margin-top: 8px; }
+details.raw > summary::before { content: "\25B8 "; } details.raw[open] > summary::before { content: "\25BE "; }
+pre.raw-json { font: 12px/1.4 var(--mono); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 8px 10px; overflow: auto; max-height: 26em; margin: 4px 0; }
+.fork { padding: 2px 12px 6px 5.5em; font: 12px var(--mono); color: var(--muted); }
+body.failures-only li.turn[data-status="pass"], body.failures-only li.turn[data-status="skip"], body.failures-only details.test[data-status="pass"] { display: none; }
+li.turn.filtered-out, details.test.filtered-out { display: none; }
+@media (max-width: 640px) { summary.turn-row { grid-template-columns: 3.5em 1fr auto; } .turn-room, .turn-inv { display: none; } .turn-body, .fork { padding-left: 12px; } }
 </style>
 </head>
 <body>
-<div class="wrap">
-<header>
-  <strong>Hello Chord &mdash; test report</strong>
-  <div class="summary">
-    <span class="status PASS">PASS</span>
-    <span>19/19 cards</span>
-    <span>33/33 assertions</span>
-    <span>hello-chord.tests.json</span>
-    <span>Sharpee 5.3.0 · Chord 3.6.0</span>
-    <span>2026-09-07 20:22</span>
-  </div>
-</header>
-<section class="line"><h2>opening-porch</h2><article class="card pass"><div class="cmd">&#9989; &gt; opening</div><ul class="asserts"><li class="pass">&#10003; channel info.title is &quot;Hello Chord&quot;</li><li class="pass">&#10003; channel info.description is &quot;A locked loft, three bell ropes, and one chord to ring before the rain stops.&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; look</div><pre class="out">Porch
-The rain has chased you under the porch of a small stone church. Somewhere above, a bell tower waits for someone to give it a reason.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;Porch&quot;</li><li class="pass">&#10003; contains &quot;The rain has chased you under the porch of a small stone church.&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; south</div><pre class="out">You look out at the rain. The rain looks back. Not yet.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;You look out at the rain. The rain looks back. Not yet.&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; north</div><pre class="out">Nave
-Rows of pews face a plain altar. A hymn board hangs on a pillar. A small door in the corner leads east to the vestry, and a ladder climbs to a hatch in the ceiling.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;Nave&quot;</li><li class="pass">&#10003; contains &quot;A hymn board hangs on a pillar.&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; read board</div><pre class="out">The board reads, in worn brass numerals and a scrap of paper:
+<div class="wrap"><h1>Hello Chord &mdash; test report</h1><div class="subtitle">2 lines &middot; 19 cards &middot; 33 assertions &middot; 66 ms</div><div class="summary"><div class="item"><span class="num status PASS">PASS</span></div><div class="item"><span class="num pass-num">2</span><span class="label">lines passed</span></div><div class="item"><span class="num ">0</span><span class="label">lines failed</span></div><div class="item"><span class="num pass-num">19</span><span class="label">cards passed</span></div><div class="item"><span class="num ">0</span><span class="label">cards failed</span></div><div class="item"><span class="num pass-num">33</span><span class="label">of 33 assertions</span></div><div class="item"><span class="num">66</span><span class="label">ms</span></div></div><div class="games"><span class="relpath">hello-chord.tests.json</span><span class="seed">seed 42</span><span>Sharpee 5.3.0 · Chord 3.6.0</span><span>generated 2026-09-08 18:31</span><span>0 unreached &middot; 0 skipped &middot; 0 errors</span></div><div class="controls"><button type="button" id="expand-all">Expand all</button><button type="button" id="collapse-all">Collapse all</button><label><input type="checkbox" id="failures-only"> failures only</label><input type="search" id="filter" placeholder="filter cards: command, prose, checks, room, item" aria-label="filter cards"><span class="hint" id="filter-hint"></span></div><h2>Lines</h2><table class="lines"><thead><tr><th>line</th><th>forks from</th><th class="num">cards</th><th class="num">passed</th><th class="num">failed</th><th class="num">ms</th></tr></thead><tbody><tr class="pass"><td><a href="#line-0">opening-porch</a></td><td>&mdash;</td><td class="num">17</td><td class="num pass">17</td><td class="num ">0</td><td class="num">61</td></tr><tr class="pass"><td><a href="#line-1">bell-loft · pull white rope</a></td><td>opening-porch &middot; T:11 up</td><td class="num">2</td><td class="num pass">2</td><td class="num ">0</td><td class="num">5</td></tr></tbody></table><h2>Tests</h2><div class="tests"><details class="test" id="line-0" data-status="pass" open><summary class="test-summary"><span class="glyph pass">&#10003;</span><span class="test-name">opening-porch</span><span class="test-summary-meta">main line &middot; 17 cards &middot; 17/17 &#10003; &middot; 61 ms</span></summary><div class="test-body"><ul class="transcript"><li class="turn" data-status="pass"><details class="turn-detail" data-status="pass"><summary class="turn-row"><span class="turn-tcount">&mdash;</span><span class="turn-cmd">&gt; (opening)</span><span class="turn-room"></span><span class="turn-inv" title="carrying nothing"></span><span class="turn-asserts"><span class="pass">&#10003; 2/2</span></span></summary><div class="turn-body"><pre class="turn-response empty">(the opening card checks what the client shows before play; no prose)</pre><details class="turn-extras"><summary class="turn-extras-summary">2 checks &#10003; &middot; raw</summary><div class="turn-extras-body"><h4>Checks</h4><ul class="assertions"><li class="pass"><span class="kind">channel</span><span class="label">info.title is &quot;Hello Chord&quot;</span></li><li class="pass"><span class="kind">channel</span><span class="label">info.description is &quot;A locked loft, three bell ropes, and one chord to ring before the rain stops.&quot;</span></li></ul><details class="raw"><summary>Raw: the runner record and the authored card</summary><pre class="raw-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;seq&quot;: 2,
+  &quot;elapsedMs&quot;: 63,
+  &quot;type&quot;: &quot;command-result&quot;,
+  &quot;file&quot;: &quot;opening-porch&quot;,
+  &quot;line&quot;: 0,
+  &quot;input&quot;: &quot;(opening)&quot;,
+  &quot;passed&quot;: true,
+  &quot;expectedFailure&quot;: false,
+  &quot;skipped&quot;: false,
+  &quot;actualOutput&quot;: &quot;&quot;,
+  &quot;assertionResults&quot;: [
+    {
+      &quot;description&quot;: &quot;channel info.title is \&quot;Hello Chord\&quot;&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;description&quot;: &quot;channel info.description is \&quot;A locked loft, three bell ropes, and one chord to ring before the rain stops.\&quot;&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}</pre><pre class="raw-json">{
+  &quot;type&quot;: &quot;opening&quot;,
+  &quot;assertions&quot;: {
+    &quot;channels&quot;: [
+      {
+        &quot;id&quot;: &quot;info.title&quot;,
+        &quot;is&quot;: &quot;Hello Chord&quot;
+      },
+      {
+        &quot;id&quot;: &quot;info.description&quot;,
+        &quot;is&quot;: &quot;A locked loft, three bell ropes, and one chord to ring before the rain stops.&quot;
+      }
+    ]
+  }
+}</pre></details></div></details></div></details></li><li class="turn" data-status="pass"><details class="turn-detail" data-status="pass"><summary class="turn-row"><span class="turn-tcount">T:1</span><span class="turn-cmd">&gt; look  (boot)</span><span class="turn-room">Porch</span><span class="turn-inv" title="carrying nothing"></span><span class="turn-asserts"><span class="pass">&#10003; 2/2</span></span></summary><div class="turn-body"><pre class="turn-response"><span class="hl" data-asserts="0">Porch</span>
+<span class="hl" data-asserts="1">The rain has chased you under the porch of a small stone church.</span> Somewhere above, a bell tower waits for someone to give it a reason.</pre><details class="turn-extras"><summary class="turn-extras-summary">2 checks &#10003; &middot; Porch &middot; 0 carried &middot; raw</summary><div class="turn-extras-body"><h4>Checks</h4><ul class="assertions"><li class="pass"><span class="kind">contains</span><span class="label">Porch</span><button type="button" class="match-toggle" data-assertion-idx="0">show</button></li><li class="pass"><span class="kind">contains</span><span class="label">The rain has chased you under the porch of a small stone church.</span><button type="button" class="match-toggle" data-assertion-idx="1">show</button></li></ul><h4>World after this turn</h4><dl class="kv"><dt>Location</dt><dd>Porch</dd><dt>Carrying</dt><dd>nothing</dd></dl><details class="raw"><summary>Raw: the runner record and the authored card</summary><pre class="raw-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;seq&quot;: 3,
+  &quot;elapsedMs&quot;: 63,
+  &quot;type&quot;: &quot;command-result&quot;,
+  &quot;file&quot;: &quot;opening-porch&quot;,
+  &quot;line&quot;: 0,
+  &quot;input&quot;: &quot;look&quot;,
+  &quot;passed&quot;: true,
+  &quot;expectedFailure&quot;: false,
+  &quot;skipped&quot;: false,
+  &quot;actualOutput&quot;: &quot;Porch\nThe rain has chased you under the porch of a small stone church. Somewhere above, a bell tower waits for someone to give it a reason.&quot;,
+  &quot;turn&quot;: 1,
+  &quot;world&quot;: {
+    &quot;location&quot;: {
+      &quot;name&quot;: &quot;Porch&quot;,
+      &quot;token&quot;: &quot;doorway&quot;
+    },
+    &quot;inventory&quot;: []
+  },
+  &quot;assertionResults&quot;: [
+    {
+      &quot;description&quot;: &quot;contains \&quot;Porch\&quot;&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;description&quot;: &quot;contains \&quot;The rain has chased you under the porch of a small stone church.\&quot;&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}</pre><pre class="raw-json">{
+  &quot;type&quot;: &quot;boot&quot;,
+  &quot;assertions&quot;: {
+    &quot;contains&quot;: [
+      &quot;Porch&quot;,
+      &quot;The rain has chased you under the porch of a small stone church.&quot;
+    ]
+  }
+}</pre></details></div></details></div></details></li><li class="turn" data-status="pass"><details class="turn-detail" data-status="pass"><summary class="turn-row"><span class="turn-tcount">T:2</span><span class="turn-cmd">&gt; south</span><span class="turn-room">Porch</span><span class="turn-inv" title="carrying nothing"></span><span class="turn-asserts"><span class="pass">&#10003; 1/1</span></span></summary><div class="turn-body"><pre class="turn-response"><span class="hl" data-asserts="0">You look out at the rain. The rain looks back. Not yet.</span></pre><details class="turn-extras"><summary class="turn-extras-summary">1 check &#10003; &middot; Porch &middot; 0 carried &middot; raw</summary><div class="turn-extras-body"><h4>Checks</h4><ul class="assertions"><li class="pass"><span class="kind">contains</span><span class="label">You look out at the rain. The rain looks back. Not yet.</span><button type="button" class="match-toggle" data-assertion-idx="0">show</button></li></ul><h4>World after this turn</h4><dl class="kv"><dt>Location</dt><dd>Porch</dd><dt>Carrying</dt><dd>nothing</dd></dl><details class="raw"><summary>Raw: the runner record and the authored card</summary><pre class="raw-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;seq&quot;: 4,
+  &quot;elapsedMs&quot;: 66,
+  &quot;type&quot;: &quot;command-result&quot;,
+  &quot;file&quot;: &quot;opening-porch&quot;,
+  &quot;line&quot;: 0,
+  &quot;input&quot;: &quot;south&quot;,
+  &quot;passed&quot;: true,
+  &quot;expectedFailure&quot;: false,
+  &quot;skipped&quot;: false,
+  &quot;actualOutput&quot;: &quot;You look out at the rain. The rain looks back. Not yet.&quot;,
+  &quot;turn&quot;: 2,
+  &quot;world&quot;: {
+    &quot;location&quot;: {
+      &quot;name&quot;: &quot;Porch&quot;,
+      &quot;token&quot;: &quot;doorway&quot;
+    },
+    &quot;inventory&quot;: []
+  },
+  &quot;assertionResults&quot;: [
+    {
+      &quot;description&quot;: &quot;contains \&quot;You look out at the rain. The rain looks back. Not yet.\&quot;&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}</pre><pre class="raw-json">{
+  &quot;type&quot;: &quot;turn&quot;,
+  &quot;command&quot;: &quot;south&quot;,
+  &quot;assertions&quot;: {
+    &quot;contains&quot;: [
+      &quot;You look out at the rain. The rain looks back. Not yet.&quot;
+    ]
+  }
+}</pre></details></div></details></div></details></li><li class="turn" data-status="pass"><details class="turn-detail" data-status="pass"><summary class="turn-row"><span class="turn-tcount">T:3</span><span class="turn-cmd">&gt; north</span><span class="turn-room">Nave</span><span class="turn-inv" title="carrying nothing"></span><span class="turn-asserts"><span class="pass">&#10003; 2/2</span></span></summary><div class="turn-body"><pre class="turn-response"><span class="hl" data-asserts="0">Nave</span>
+Rows of pews face a plain altar. <span class="hl" data-asserts="1">A hymn board hangs on a pillar.</span> A small door in the corner leads east to the vestry, and a ladder climbs to a hatch in the ceiling.</pre><details class="turn-extras"><summary class="turn-extras-summary">2 checks &#10003; &middot; Nave &middot; 0 carried &middot; raw</summary><div class="turn-extras-body"><h4>Checks</h4><ul class="assertions"><li class="pass"><span class="kind">contains</span><span class="label">Nave</span><button type="button" class="match-toggle" data-assertion-idx="0">show</button></li><li class="pass"><span class="kind">contains</span><span class="label">A hymn board hangs on a pillar.</span><button type="button" class="match-toggle" data-assertion-idx="1">show</button></li></ul><h4>World after this turn</h4><dl class="kv"><dt>Location</dt><dd>Nave</dd><dt>Carrying</dt><dd>nothing</dd></dl><details class="raw"><summary>Raw: the runner record and the authored card</summary><pre class="raw-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;seq&quot;: 5,
+  &quot;elapsedMs&quot;: 70,
+  &quot;type&quot;: &quot;command-result&quot;,
+  &quot;file&quot;: &quot;opening-porch&quot;,
+  &quot;line&quot;: 0,
+  &quot;input&quot;: &quot;north&quot;,
+  &quot;passed&quot;: true,
+  &quot;expectedFailure&quot;: false,
+  &quot;skipped&quot;: false,
+  &quot;actualOutput&quot;: &quot;Nave\nRows of pews face a plain altar. A hymn board hangs on a pillar. A small door in the corner leads east to the vestry, and a ladder climbs to a hatch in the ceiling.&quot;,
+  &quot;turn&quot;: 3,
+  &quot;world&quot;: {
+    &quot;location&quot;: {
+      &quot;name&quot;: &quot;Nave&quot;,
+      &quot;token&quot;: &quot;church&quot;
+    },
+    &quot;inventory&quot;: []
+  },
+  &quot;assertionResults&quot;: [
+    {
+      &quot;description&quot;: &quot;contains \&quot;Nave\&quot;&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;description&quot;: &quot;contains \&quot;A hymn board hangs on a pillar.\&quot;&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}</pre><pre class="raw-json">{
+  &quot;type&quot;: &quot;turn&quot;,
+  &quot;command&quot;: &quot;north&quot;,
+  &quot;assertions&quot;: {
+    &quot;contains&quot;: [
+      &quot;Nave&quot;,
+      &quot;A hymn board hangs on a pillar.&quot;
+    ]
+  }
+}</pre></details></div></details></div></details></li><li class="turn" data-status="pass"><details class="turn-detail" data-status="pass"><summary class="turn-row"><span class="turn-tcount">T:4</span><span class="turn-cmd">&gt; read board</span><span class="turn-room">Nave</span><span class="turn-inv" title="carrying nothing"></span><span class="turn-asserts"><span class="pass">&#10003; 2/2</span></span></summary><div class="turn-body"><pre class="turn-response">The board reads, in worn brass numerals and a scrap of paper:
 TODAY: NO HYMNS.
-RING THE RED, THEN THE WHITE, THEN THE BLUE.
-THE KEY IS ON THE HOOK.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;RING THE RED, THEN THE WHITE, THEN THE BLUE.&quot;</li><li class="pass">&#10003; contains &quot;THE KEY IS ON THE HOOK.&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; up</div><pre class="out">The hatch is locked.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;The hatch is locked.&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; east</div><pre class="out">Vestry
+<span class="hl" data-asserts="0">RING THE RED, THEN THE WHITE, THEN THE BLUE.</span>
+<span class="hl" data-asserts="1">THE KEY IS ON THE HOOK.</span></pre><details class="turn-extras"><summary class="turn-extras-summary">2 checks &#10003; &middot; Nave &middot; 0 carried &middot; raw</summary><div class="turn-extras-body"><h4>Checks</h4><ul class="assertions"><li class="pass"><span class="kind">contains</span><span class="label">RING THE RED, THEN THE WHITE, THEN THE BLUE.</span><button type="button" class="match-toggle" data-assertion-idx="0">show</button></li><li class="pass"><span class="kind">contains</span><span class="label">THE KEY IS ON THE HOOK.</span><button type="button" class="match-toggle" data-assertion-idx="1">show</button></li></ul><h4>World after this turn</h4><dl class="kv"><dt>Location</dt><dd>Nave</dd><dt>Carrying</dt><dd>nothing</dd></dl><details class="raw"><summary>Raw: the runner record and the authored card</summary><pre class="raw-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;seq&quot;: 6,
+  &quot;elapsedMs&quot;: 79,
+  &quot;type&quot;: &quot;command-result&quot;,
+  &quot;file&quot;: &quot;opening-porch&quot;,
+  &quot;line&quot;: 0,
+  &quot;input&quot;: &quot;read board&quot;,
+  &quot;passed&quot;: true,
+  &quot;expectedFailure&quot;: false,
+  &quot;skipped&quot;: false,
+  &quot;actualOutput&quot;: &quot;The board reads, in worn brass numerals and a scrap of paper:\nTODAY: NO HYMNS.\nRING THE RED, THEN THE WHITE, THEN THE BLUE.\nTHE KEY IS ON THE HOOK.&quot;,
+  &quot;turn&quot;: 4,
+  &quot;world&quot;: {
+    &quot;location&quot;: {
+      &quot;name&quot;: &quot;Nave&quot;,
+      &quot;token&quot;: &quot;church&quot;
+    },
+    &quot;inventory&quot;: []
+  },
+  &quot;assertionResults&quot;: [
+    {
+      &quot;description&quot;: &quot;contains \&quot;RING THE RED, THEN THE WHITE, THEN THE BLUE.\&quot;&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;description&quot;: &quot;contains \&quot;THE KEY IS ON THE HOOK.\&quot;&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}</pre><pre class="raw-json">{
+  &quot;type&quot;: &quot;turn&quot;,
+  &quot;command&quot;: &quot;read board&quot;,
+  &quot;assertions&quot;: {
+    &quot;contains&quot;: [
+      &quot;RING THE RED, THEN THE WHITE, THEN THE BLUE.&quot;,
+      &quot;THE KEY IS ON THE HOOK.&quot;
+    ]
+  }
+}</pre></details></div></details></div></details></li><li class="turn" data-status="pass"><details class="turn-detail" data-status="pass"><summary class="turn-row"><span class="turn-tcount">T:5</span><span class="turn-cmd">&gt; up</span><span class="turn-room">Nave</span><span class="turn-inv" title="carrying nothing"></span><span class="turn-asserts"><span class="pass">&#10003; 1/1</span></span></summary><div class="turn-body"><pre class="turn-response"><span class="hl" data-asserts="0">The hatch is locked.</span></pre><details class="turn-extras"><summary class="turn-extras-summary">1 check &#10003; &middot; Nave &middot; 0 carried &middot; raw</summary><div class="turn-extras-body"><h4>Checks</h4><ul class="assertions"><li class="pass"><span class="kind">contains</span><span class="label">The hatch is locked.</span><button type="button" class="match-toggle" data-assertion-idx="0">show</button></li></ul><h4>World after this turn</h4><dl class="kv"><dt>Location</dt><dd>Nave</dd><dt>Carrying</dt><dd>nothing</dd></dl><details class="raw"><summary>Raw: the runner record and the authored card</summary><pre class="raw-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;seq&quot;: 7,
+  &quot;elapsedMs&quot;: 81,
+  &quot;type&quot;: &quot;command-result&quot;,
+  &quot;file&quot;: &quot;opening-porch&quot;,
+  &quot;line&quot;: 0,
+  &quot;input&quot;: &quot;up&quot;,
+  &quot;passed&quot;: true,
+  &quot;expectedFailure&quot;: false,
+  &quot;skipped&quot;: false,
+  &quot;actualOutput&quot;: &quot;The hatch is locked.&quot;,
+  &quot;turn&quot;: 5,
+  &quot;world&quot;: {
+    &quot;location&quot;: {
+      &quot;name&quot;: &quot;Nave&quot;,
+      &quot;token&quot;: &quot;church&quot;
+    },
+    &quot;inventory&quot;: []
+  },
+  &quot;assertionResults&quot;: [
+    {
+      &quot;description&quot;: &quot;contains \&quot;The hatch is locked.\&quot;&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}</pre><pre class="raw-json">{
+  &quot;type&quot;: &quot;turn&quot;,
+  &quot;command&quot;: &quot;up&quot;,
+  &quot;assertions&quot;: {
+    &quot;contains&quot;: [
+      &quot;The hatch is locked.&quot;
+    ]
+  }
+}</pre></details></div></details></div></details></li><li class="turn" data-status="pass"><details class="turn-detail" data-status="pass"><summary class="turn-row"><span class="turn-tcount">T:6</span><span class="turn-cmd">&gt; east</span><span class="turn-room">Vestry</span><span class="turn-inv" title="carrying nothing"></span><span class="turn-asserts"><span class="pass">&#10003; 2/2</span></span></summary><div class="turn-body"><pre class="turn-response"><span class="hl" data-asserts="0">Vestry</span>
 A cramped room smelling of candle wax and damp wool. An iron hook is screwed into the wall at eye height. The nave is back to the west.
 
-On the iron hook you see a brass key.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;Vestry&quot;</li><li class="pass">&#10003; contains &quot;On the iron hook you see a brass key.&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; take key</div><pre class="out">You take the brass key from the iron hook.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;You take the brass key from the iron hook.&quot;</li><li class="pass">&#10003; state player.inventory contains brass key</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; west</div><pre class="out">Nave
-Rows of pews face a plain altar. A hymn board hangs on a pillar. A small door in the corner leads east to the vestry, and a ladder climbs to a hatch in the ceiling.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;Nave&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; unlock hatch with key</div><pre class="out">You unlock the hatch with the brass key.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;You unlock the hatch with the brass key.&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; open hatch</div><pre class="out">You open the hatch.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;You open the hatch.&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; up</div><pre class="out">Bell Loft
-You climb through the hatch into the loft. Three ropes hang in a row, each rising into the dark toward a bell you cannot see.
+<span class="hl" data-asserts="1">On the iron hook you see a brass key.</span></pre><details class="turn-extras"><summary class="turn-extras-summary">2 checks &#10003; &middot; Vestry &middot; 0 carried &middot; raw</summary><div class="turn-extras-body"><h4>Checks</h4><ul class="assertions"><li class="pass"><span class="kind">contains</span><span class="label">Vestry</span><button type="button" class="match-toggle" data-assertion-idx="0">show</button></li><li class="pass"><span class="kind">contains</span><span class="label">On the iron hook you see a brass key.</span><button type="button" class="match-toggle" data-assertion-idx="1">show</button></li></ul><h4>World after this turn</h4><dl class="kv"><dt>Location</dt><dd>Vestry</dd><dt>Carrying</dt><dd>nothing</dd></dl><details class="raw"><summary>Raw: the runner record and the authored card</summary><pre class="raw-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;seq&quot;: 8,
+  &quot;elapsedMs&quot;: 84,
+  &quot;type&quot;: &quot;command-result&quot;,
+  &quot;file&quot;: &quot;opening-porch&quot;,
+  &quot;line&quot;: 0,
+  &quot;input&quot;: &quot;east&quot;,
+  &quot;passed&quot;: true,
+  &quot;expectedFailure&quot;: false,
+  &quot;skipped&quot;: false,
+  &quot;actualOutput&quot;: &quot;Vestry\nA cramped room smelling of candle wax and damp wool. An iron hook is screwed into the wall at eye height. The nave is back to the west.\n\nOn the iron hook you see a brass key.&quot;,
+  &quot;turn&quot;: 6,
+  &quot;world&quot;: {
+    &quot;location&quot;: {
+      &quot;name&quot;: &quot;Vestry&quot;,
+      &quot;token&quot;: &quot;Vestry&quot;
+    },
+    &quot;inventory&quot;: []
+  },
+  &quot;assertionResults&quot;: [
+    {
+      &quot;description&quot;: &quot;contains \&quot;Vestry\&quot;&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;description&quot;: &quot;contains \&quot;On the iron hook you see a brass key.\&quot;&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}</pre><pre class="raw-json">{
+  &quot;type&quot;: &quot;turn&quot;,
+  &quot;command&quot;: &quot;east&quot;,
+  &quot;assertions&quot;: {
+    &quot;contains&quot;: [
+      &quot;Vestry&quot;,
+      &quot;On the iron hook you see a brass key.&quot;
+    ]
+  }
+}</pre></details></div></details></div></details></li><li class="turn" data-status="pass"><details class="turn-detail" data-status="pass"><summary class="turn-row"><span class="turn-tcount">T:7</span><span class="turn-cmd">&gt; take key</span><span class="turn-room">Vestry</span><span class="turn-inv" title="brass key">1 carried</span><span class="turn-asserts"><span class="pass">&#10003; 2/2</span></span></summary><div class="turn-body"><pre class="turn-response"><span class="hl" data-asserts="0">You take the brass key from the iron hook.</span></pre><details class="turn-extras"><summary class="turn-extras-summary">2 checks &#10003; &middot; Vestry &middot; 1 carried &middot; raw</summary><div class="turn-extras-body"><h4>Checks</h4><ul class="assertions"><li class="pass"><span class="kind">contains</span><span class="label">You take the brass key from the iron hook.</span><button type="button" class="match-toggle" data-assertion-idx="0">show</button></li><li class="pass"><span class="kind">state</span><span class="label">player.inventory contains brass key</span></li></ul><h4>World after this turn</h4><dl class="kv"><dt>Location</dt><dd>Vestry</dd><dt>Carrying</dt><dd>brass key</dd></dl><details class="raw"><summary>Raw: the runner record and the authored card</summary><pre class="raw-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;seq&quot;: 9,
+  &quot;elapsedMs&quot;: 90,
+  &quot;type&quot;: &quot;command-result&quot;,
+  &quot;file&quot;: &quot;opening-porch&quot;,
+  &quot;line&quot;: 0,
+  &quot;input&quot;: &quot;take key&quot;,
+  &quot;passed&quot;: true,
+  &quot;expectedFailure&quot;: false,
+  &quot;skipped&quot;: false,
+  &quot;actualOutput&quot;: &quot;You take the brass key from the iron hook.&quot;,
+  &quot;turn&quot;: 7,
+  &quot;world&quot;: {
+    &quot;location&quot;: {
+      &quot;name&quot;: &quot;Vestry&quot;,
+      &quot;token&quot;: &quot;Vestry&quot;
+    },
+    &quot;inventory&quot;: [
+      {
+        &quot;name&quot;: &quot;brass key&quot;,
+        &quot;token&quot;: &quot;key&quot;
+      }
+    ]
+  },
+  &quot;assertionResults&quot;: [
+    {
+      &quot;description&quot;: &quot;contains \&quot;You take the brass key from the iron hook.\&quot;&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;description&quot;: &quot;state player.inventory contains brass key&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}</pre><pre class="raw-json">{
+  &quot;type&quot;: &quot;turn&quot;,
+  &quot;command&quot;: &quot;take key&quot;,
+  &quot;assertions&quot;: {
+    &quot;contains&quot;: [
+      &quot;You take the brass key from the iron hook.&quot;
+    ],
+    &quot;states&quot;: [
+      &quot;player.inventory contains brass key&quot;
+    ]
+  }
+}</pre></details></div></details></div></details></li><li class="turn" data-status="pass"><details class="turn-detail" data-status="pass"><summary class="turn-row"><span class="turn-tcount">T:8</span><span class="turn-cmd">&gt; west</span><span class="turn-room">Nave</span><span class="turn-inv" title="brass key">1 carried</span><span class="turn-asserts"><span class="pass">&#10003; 1/1</span></span></summary><div class="turn-body"><pre class="turn-response"><span class="hl" data-asserts="0">Nave</span>
+Rows of pews face a plain altar. A hymn board hangs on a pillar. A small door in the corner leads east to the vestry, and a ladder climbs to a hatch in the ceiling.</pre><details class="turn-extras"><summary class="turn-extras-summary">1 check &#10003; &middot; Nave &middot; 1 carried &middot; raw</summary><div class="turn-extras-body"><h4>Checks</h4><ul class="assertions"><li class="pass"><span class="kind">contains</span><span class="label">Nave</span><button type="button" class="match-toggle" data-assertion-idx="0">show</button></li></ul><h4>World after this turn</h4><dl class="kv"><dt>Location</dt><dd>Nave</dd><dt>Carrying</dt><dd>brass key</dd></dl><details class="raw"><summary>Raw: the runner record and the authored card</summary><pre class="raw-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;seq&quot;: 10,
+  &quot;elapsedMs&quot;: 93,
+  &quot;type&quot;: &quot;command-result&quot;,
+  &quot;file&quot;: &quot;opening-porch&quot;,
+  &quot;line&quot;: 0,
+  &quot;input&quot;: &quot;west&quot;,
+  &quot;passed&quot;: true,
+  &quot;expectedFailure&quot;: false,
+  &quot;skipped&quot;: false,
+  &quot;actualOutput&quot;: &quot;Nave\nRows of pews face a plain altar. A hymn board hangs on a pillar. A small door in the corner leads east to the vestry, and a ladder climbs to a hatch in the ceiling.&quot;,
+  &quot;turn&quot;: 8,
+  &quot;world&quot;: {
+    &quot;location&quot;: {
+      &quot;name&quot;: &quot;Nave&quot;,
+      &quot;token&quot;: &quot;church&quot;
+    },
+    &quot;inventory&quot;: [
+      {
+        &quot;name&quot;: &quot;brass key&quot;,
+        &quot;token&quot;: &quot;key&quot;
+      }
+    ]
+  },
+  &quot;assertionResults&quot;: [
+    {
+      &quot;description&quot;: &quot;contains \&quot;Nave\&quot;&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}</pre><pre class="raw-json">{
+  &quot;type&quot;: &quot;turn&quot;,
+  &quot;command&quot;: &quot;west&quot;,
+  &quot;assertions&quot;: {
+    &quot;contains&quot;: [
+      &quot;Nave&quot;
+    ]
+  }
+}</pre></details></div></details></div></details></li><li class="turn" data-status="pass"><details class="turn-detail" data-status="pass"><summary class="turn-row"><span class="turn-tcount">T:9</span><span class="turn-cmd">&gt; unlock hatch with key</span><span class="turn-room">Nave</span><span class="turn-inv" title="brass key">1 carried</span><span class="turn-asserts"><span class="pass">&#10003; 1/1</span></span></summary><div class="turn-body"><pre class="turn-response"><span class="hl" data-asserts="0">You unlock the hatch with the brass key.</span></pre><details class="turn-extras"><summary class="turn-extras-summary">1 check &#10003; &middot; Nave &middot; 1 carried &middot; raw</summary><div class="turn-extras-body"><h4>Checks</h4><ul class="assertions"><li class="pass"><span class="kind">contains</span><span class="label">You unlock the hatch with the brass key.</span><button type="button" class="match-toggle" data-assertion-idx="0">show</button></li></ul><h4>World after this turn</h4><dl class="kv"><dt>Location</dt><dd>Nave</dd><dt>Carrying</dt><dd>brass key</dd></dl><details class="raw"><summary>Raw: the runner record and the authored card</summary><pre class="raw-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;seq&quot;: 11,
+  &quot;elapsedMs&quot;: 95,
+  &quot;type&quot;: &quot;command-result&quot;,
+  &quot;file&quot;: &quot;opening-porch&quot;,
+  &quot;line&quot;: 0,
+  &quot;input&quot;: &quot;unlock hatch with key&quot;,
+  &quot;passed&quot;: true,
+  &quot;expectedFailure&quot;: false,
+  &quot;skipped&quot;: false,
+  &quot;actualOutput&quot;: &quot;You unlock the hatch with the brass key.&quot;,
+  &quot;turn&quot;: 9,
+  &quot;world&quot;: {
+    &quot;location&quot;: {
+      &quot;name&quot;: &quot;Nave&quot;,
+      &quot;token&quot;: &quot;church&quot;
+    },
+    &quot;inventory&quot;: [
+      {
+        &quot;name&quot;: &quot;brass key&quot;,
+        &quot;token&quot;: &quot;key&quot;
+      }
+    ]
+  },
+  &quot;assertionResults&quot;: [
+    {
+      &quot;description&quot;: &quot;contains \&quot;You unlock the hatch with the brass key.\&quot;&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}</pre><pre class="raw-json">{
+  &quot;type&quot;: &quot;turn&quot;,
+  &quot;command&quot;: &quot;unlock hatch with key&quot;,
+  &quot;assertions&quot;: {
+    &quot;contains&quot;: [
+      &quot;You unlock the hatch with the brass key.&quot;
+    ]
+  }
+}</pre></details></div></details></div></details></li><li class="turn" data-status="pass"><details class="turn-detail" data-status="pass"><summary class="turn-row"><span class="turn-tcount">T:10</span><span class="turn-cmd">&gt; open hatch</span><span class="turn-room">Nave</span><span class="turn-inv" title="brass key">1 carried</span><span class="turn-asserts"><span class="pass">&#10003; 1/1</span></span></summary><div class="turn-body"><pre class="turn-response"><span class="hl" data-asserts="0">You open the hatch.</span></pre><details class="turn-extras"><summary class="turn-extras-summary">1 check &#10003; &middot; Nave &middot; 1 carried &middot; raw</summary><div class="turn-extras-body"><h4>Checks</h4><ul class="assertions"><li class="pass"><span class="kind">contains</span><span class="label">You open the hatch.</span><button type="button" class="match-toggle" data-assertion-idx="0">show</button></li></ul><h4>World after this turn</h4><dl class="kv"><dt>Location</dt><dd>Nave</dd><dt>Carrying</dt><dd>brass key</dd></dl><details class="raw"><summary>Raw: the runner record and the authored card</summary><pre class="raw-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;seq&quot;: 12,
+  &quot;elapsedMs&quot;: 99,
+  &quot;type&quot;: &quot;command-result&quot;,
+  &quot;file&quot;: &quot;opening-porch&quot;,
+  &quot;line&quot;: 0,
+  &quot;input&quot;: &quot;open hatch&quot;,
+  &quot;passed&quot;: true,
+  &quot;expectedFailure&quot;: false,
+  &quot;skipped&quot;: false,
+  &quot;actualOutput&quot;: &quot;You open the hatch.&quot;,
+  &quot;turn&quot;: 10,
+  &quot;world&quot;: {
+    &quot;location&quot;: {
+      &quot;name&quot;: &quot;Nave&quot;,
+      &quot;token&quot;: &quot;church&quot;
+    },
+    &quot;inventory&quot;: [
+      {
+        &quot;name&quot;: &quot;brass key&quot;,
+        &quot;token&quot;: &quot;key&quot;
+      }
+    ]
+  },
+  &quot;assertionResults&quot;: [
+    {
+      &quot;description&quot;: &quot;contains \&quot;You open the hatch.\&quot;&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}</pre><pre class="raw-json">{
+  &quot;type&quot;: &quot;turn&quot;,
+  &quot;command&quot;: &quot;open hatch&quot;,
+  &quot;assertions&quot;: {
+    &quot;contains&quot;: [
+      &quot;You open the hatch.&quot;
+    ]
+  }
+}</pre></details></div></details></div></details></li><li class="turn" data-status="pass"><details class="turn-detail" data-status="pass"><summary class="turn-row"><span class="turn-tcount">T:11</span><span class="turn-cmd">&gt; up</span><span class="turn-room">Bell Loft</span><span class="turn-inv" title="brass key">1 carried</span><span class="turn-asserts"><span class="pass">&#10003; 4/4</span></span></summary><div class="turn-body"><pre class="turn-response"><span class="hl" data-asserts="0">Bell Loft</span>
+You climb through the hatch into the loft. <span class="hl" data-asserts="1">Three ropes hang in a row</span>, each rising into the dark toward a bell you cannot see.
 
-You have risen to the rank of a Sexton.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;Bell Loft&quot;</li><li class="pass">&#10003; contains &quot;Three ropes hang in a row&quot;</li><li class="pass">&#10003; contains &quot;You have risen to the rank of a Sexton.&quot;</li><li class="pass">&#10003; state player.location = Bell Loft</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; pull red rope</div><pre class="out">You haul on the red rope. Far above, a deep bell answers: one low, round note that goes on longer than seems reasonable.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;a deep bell answers&quot;</li><li class="pass">&#10003; state the red rope is pulled</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; pull red rope</div><pre class="out">The red rope is still swinging gently. Its bell has said its piece.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;Its bell has said its piece.&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; pull white rope</div><pre class="out">You pull the white rope. A second bell rings out, higher, and the two notes hang together in the air.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;A second bell rings out, higher&quot;</li><li class="pass">&#10003; state the white rope is pulled</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; score</div><pre class="out">You have scored 10 out of 20, earning you the rank of a Sexton.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;You have scored 10 out of 20&quot;</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; pull blue rope</div><pre class="out">You pull the blue rope. The third bell joins the other two, and for a long moment the tower holds a single chord over the wet fields. Below, the rain eases. Hello, Chord.
+<span class="hl" data-asserts="2">You have risen to the rank of a Sexton.</span></pre><details class="turn-extras"><summary class="turn-extras-summary">4 checks &#10003; &middot; Bell Loft &middot; 1 carried &middot; raw</summary><div class="turn-extras-body"><h4>Checks</h4><ul class="assertions"><li class="pass"><span class="kind">contains</span><span class="label">Bell Loft</span><button type="button" class="match-toggle" data-assertion-idx="0">show</button></li><li class="pass"><span class="kind">contains</span><span class="label">Three ropes hang in a row</span><button type="button" class="match-toggle" data-assertion-idx="1">show</button></li><li class="pass"><span class="kind">contains</span><span class="label">You have risen to the rank of a Sexton.</span><button type="button" class="match-toggle" data-assertion-idx="2">show</button></li><li class="pass"><span class="kind">state</span><span class="label">player.location = Bell Loft</span></li></ul><h4>World after this turn</h4><dl class="kv"><dt>Location</dt><dd>Bell Loft</dd><dt>Carrying</dt><dd>brass key</dd></dl><details class="raw"><summary>Raw: the runner record and the authored card</summary><pre class="raw-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;seq&quot;: 13,
+  &quot;elapsedMs&quot;: 101,
+  &quot;type&quot;: &quot;command-result&quot;,
+  &quot;file&quot;: &quot;opening-porch&quot;,
+  &quot;line&quot;: 0,
+  &quot;input&quot;: &quot;up&quot;,
+  &quot;passed&quot;: true,
+  &quot;expectedFailure&quot;: false,
+  &quot;skipped&quot;: false,
+  &quot;actualOutput&quot;: &quot;Bell Loft\nYou climb through the hatch into the loft. Three ropes hang in a row, each rising into the dark toward a bell you cannot see.\n\nYou have risen to the rank of a Sexton.&quot;,
+  &quot;turn&quot;: 11,
+  &quot;world&quot;: {
+    &quot;location&quot;: {
+      &quot;name&quot;: &quot;Bell Loft&quot;,
+      &quot;token&quot;: &quot;loft&quot;
+    },
+    &quot;inventory&quot;: [
+      {
+        &quot;name&quot;: &quot;brass key&quot;,
+        &quot;token&quot;: &quot;key&quot;
+      }
+    ]
+  },
+  &quot;assertionResults&quot;: [
+    {
+      &quot;description&quot;: &quot;contains \&quot;Bell Loft\&quot;&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;description&quot;: &quot;contains \&quot;Three ropes hang in a row\&quot;&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;description&quot;: &quot;contains \&quot;You have risen to the rank of a Sexton.\&quot;&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;description&quot;: &quot;state player.location = Bell Loft&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}</pre><pre class="raw-json">{
+  &quot;type&quot;: &quot;turn&quot;,
+  &quot;command&quot;: &quot;up&quot;,
+  &quot;assertions&quot;: {
+    &quot;contains&quot;: [
+      &quot;Bell Loft&quot;,
+      &quot;Three ropes hang in a row&quot;,
+      &quot;You have risen to the rank of a Sexton.&quot;
+    ],
+    &quot;states&quot;: [
+      &quot;player.location = Bell Loft&quot;
+    ]
+  },
+  &quot;branches&quot;: &quot;[1 branch(es), rendered as their own lines]&quot;
+}</pre></details></div></details></div></details><div class="fork">&#8627; branch <a href="#line-1">bell-loft · pull white rope</a> &middot; 2 cards <span class="pass">&#10003;</span></div></li><li class="turn" data-status="pass"><details class="turn-detail" data-status="pass"><summary class="turn-row"><span class="turn-tcount">T:12</span><span class="turn-cmd">&gt; pull red rope</span><span class="turn-room">Bell Loft</span><span class="turn-inv" title="brass key">1 carried</span><span class="turn-asserts"><span class="pass">&#10003; 2/2</span></span></summary><div class="turn-body"><pre class="turn-response">You haul on the red rope. Far above, <span class="hl" data-asserts="0">a deep bell answers</span>: one low, round note that goes on longer than seems reasonable.</pre><details class="turn-extras"><summary class="turn-extras-summary">2 checks &#10003; &middot; Bell Loft &middot; 1 carried &middot; raw</summary><div class="turn-extras-body"><h4>Checks</h4><ul class="assertions"><li class="pass"><span class="kind">contains</span><span class="label">a deep bell answers</span><button type="button" class="match-toggle" data-assertion-idx="0">show</button></li><li class="pass"><span class="kind">state</span><span class="label">the red rope is pulled</span></li></ul><h4>World after this turn</h4><dl class="kv"><dt>Location</dt><dd>Bell Loft</dd><dt>Carrying</dt><dd>brass key</dd></dl><details class="raw"><summary>Raw: the runner record and the authored card</summary><pre class="raw-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;seq&quot;: 14,
+  &quot;elapsedMs&quot;: 103,
+  &quot;type&quot;: &quot;command-result&quot;,
+  &quot;file&quot;: &quot;opening-porch&quot;,
+  &quot;line&quot;: 0,
+  &quot;input&quot;: &quot;pull red rope&quot;,
+  &quot;passed&quot;: true,
+  &quot;expectedFailure&quot;: false,
+  &quot;skipped&quot;: false,
+  &quot;actualOutput&quot;: &quot;You haul on the red rope. Far above, a deep bell answers: one low, round note that goes on longer than seems reasonable.&quot;,
+  &quot;turn&quot;: 12,
+  &quot;world&quot;: {
+    &quot;location&quot;: {
+      &quot;name&quot;: &quot;Bell Loft&quot;,
+      &quot;token&quot;: &quot;loft&quot;
+    },
+    &quot;inventory&quot;: [
+      {
+        &quot;name&quot;: &quot;brass key&quot;,
+        &quot;token&quot;: &quot;key&quot;
+      }
+    ]
+  },
+  &quot;assertionResults&quot;: [
+    {
+      &quot;description&quot;: &quot;contains \&quot;a deep bell answers\&quot;&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;description&quot;: &quot;state the red rope is pulled&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}</pre><pre class="raw-json">{
+  &quot;type&quot;: &quot;turn&quot;,
+  &quot;command&quot;: &quot;pull red rope&quot;,
+  &quot;assertions&quot;: {
+    &quot;contains&quot;: [
+      &quot;a deep bell answers&quot;
+    ],
+    &quot;states&quot;: [
+      &quot;the red rope is pulled&quot;
+    ]
+  }
+}</pre></details></div></details></div></details></li><li class="turn" data-status="pass"><details class="turn-detail" data-status="pass"><summary class="turn-row"><span class="turn-tcount">T:13</span><span class="turn-cmd">&gt; pull red rope</span><span class="turn-room">Bell Loft</span><span class="turn-inv" title="brass key">1 carried</span><span class="turn-asserts"><span class="pass">&#10003; 1/1</span></span></summary><div class="turn-body"><pre class="turn-response">The red rope is still swinging gently. <span class="hl" data-asserts="0">Its bell has said its piece.</span></pre><details class="turn-extras"><summary class="turn-extras-summary">1 check &#10003; &middot; Bell Loft &middot; 1 carried &middot; raw</summary><div class="turn-extras-body"><h4>Checks</h4><ul class="assertions"><li class="pass"><span class="kind">contains</span><span class="label">Its bell has said its piece.</span><button type="button" class="match-toggle" data-assertion-idx="0">show</button></li></ul><h4>World after this turn</h4><dl class="kv"><dt>Location</dt><dd>Bell Loft</dd><dt>Carrying</dt><dd>brass key</dd></dl><details class="raw"><summary>Raw: the runner record and the authored card</summary><pre class="raw-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;seq&quot;: 15,
+  &quot;elapsedMs&quot;: 105,
+  &quot;type&quot;: &quot;command-result&quot;,
+  &quot;file&quot;: &quot;opening-porch&quot;,
+  &quot;line&quot;: 0,
+  &quot;input&quot;: &quot;pull red rope&quot;,
+  &quot;passed&quot;: true,
+  &quot;expectedFailure&quot;: false,
+  &quot;skipped&quot;: false,
+  &quot;actualOutput&quot;: &quot;The red rope is still swinging gently. Its bell has said its piece.&quot;,
+  &quot;turn&quot;: 13,
+  &quot;world&quot;: {
+    &quot;location&quot;: {
+      &quot;name&quot;: &quot;Bell Loft&quot;,
+      &quot;token&quot;: &quot;loft&quot;
+    },
+    &quot;inventory&quot;: [
+      {
+        &quot;name&quot;: &quot;brass key&quot;,
+        &quot;token&quot;: &quot;key&quot;
+      }
+    ]
+  },
+  &quot;assertionResults&quot;: [
+    {
+      &quot;description&quot;: &quot;contains \&quot;Its bell has said its piece.\&quot;&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}</pre><pre class="raw-json">{
+  &quot;type&quot;: &quot;turn&quot;,
+  &quot;command&quot;: &quot;pull red rope&quot;,
+  &quot;assertions&quot;: {
+    &quot;contains&quot;: [
+      &quot;Its bell has said its piece.&quot;
+    ]
+  }
+}</pre></details></div></details></div></details></li><li class="turn" data-status="pass"><details class="turn-detail" data-status="pass"><summary class="turn-row"><span class="turn-tcount">T:14</span><span class="turn-cmd">&gt; pull white rope</span><span class="turn-room">Bell Loft</span><span class="turn-inv" title="brass key">1 carried</span><span class="turn-asserts"><span class="pass">&#10003; 2/2</span></span></summary><div class="turn-body"><pre class="turn-response">You pull the white rope. <span class="hl" data-asserts="0">A second bell rings out, higher</span>, and the two notes hang together in the air.</pre><details class="turn-extras"><summary class="turn-extras-summary">2 checks &#10003; &middot; Bell Loft &middot; 1 carried &middot; raw</summary><div class="turn-extras-body"><h4>Checks</h4><ul class="assertions"><li class="pass"><span class="kind">contains</span><span class="label">A second bell rings out, higher</span><button type="button" class="match-toggle" data-assertion-idx="0">show</button></li><li class="pass"><span class="kind">state</span><span class="label">the white rope is pulled</span></li></ul><h4>World after this turn</h4><dl class="kv"><dt>Location</dt><dd>Bell Loft</dd><dt>Carrying</dt><dd>brass key</dd></dl><details class="raw"><summary>Raw: the runner record and the authored card</summary><pre class="raw-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;seq&quot;: 16,
+  &quot;elapsedMs&quot;: 107,
+  &quot;type&quot;: &quot;command-result&quot;,
+  &quot;file&quot;: &quot;opening-porch&quot;,
+  &quot;line&quot;: 0,
+  &quot;input&quot;: &quot;pull white rope&quot;,
+  &quot;passed&quot;: true,
+  &quot;expectedFailure&quot;: false,
+  &quot;skipped&quot;: false,
+  &quot;actualOutput&quot;: &quot;You pull the white rope. A second bell rings out, higher, and the two notes hang together in the air.&quot;,
+  &quot;turn&quot;: 14,
+  &quot;world&quot;: {
+    &quot;location&quot;: {
+      &quot;name&quot;: &quot;Bell Loft&quot;,
+      &quot;token&quot;: &quot;loft&quot;
+    },
+    &quot;inventory&quot;: [
+      {
+        &quot;name&quot;: &quot;brass key&quot;,
+        &quot;token&quot;: &quot;key&quot;
+      }
+    ]
+  },
+  &quot;assertionResults&quot;: [
+    {
+      &quot;description&quot;: &quot;contains \&quot;A second bell rings out, higher\&quot;&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;description&quot;: &quot;state the white rope is pulled&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}</pre><pre class="raw-json">{
+  &quot;type&quot;: &quot;turn&quot;,
+  &quot;command&quot;: &quot;pull white rope&quot;,
+  &quot;assertions&quot;: {
+    &quot;contains&quot;: [
+      &quot;A second bell rings out, higher&quot;
+    ],
+    &quot;states&quot;: [
+      &quot;the white rope is pulled&quot;
+    ]
+  }
+}</pre></details></div></details></div></details></li><li class="turn" data-status="pass"><details class="turn-detail" data-status="pass"><summary class="turn-row"><span class="turn-tcount">T:15</span><span class="turn-cmd">&gt; score</span><span class="turn-room">Bell Loft</span><span class="turn-inv" title="brass key">1 carried</span><span class="turn-asserts"><span class="pass">&#10003; 1/1</span></span></summary><div class="turn-body"><pre class="turn-response"><span class="hl" data-asserts="0">You have scored 10 out of 20</span>, earning you the rank of a Sexton.</pre><details class="turn-extras"><summary class="turn-extras-summary">1 check &#10003; &middot; Bell Loft &middot; 1 carried &middot; raw</summary><div class="turn-extras-body"><h4>Checks</h4><ul class="assertions"><li class="pass"><span class="kind">contains</span><span class="label">You have scored 10 out of 20</span><button type="button" class="match-toggle" data-assertion-idx="0">show</button></li></ul><h4>World after this turn</h4><dl class="kv"><dt>Location</dt><dd>Bell Loft</dd><dt>Carrying</dt><dd>brass key</dd></dl><details class="raw"><summary>Raw: the runner record and the authored card</summary><pre class="raw-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;seq&quot;: 17,
+  &quot;elapsedMs&quot;: 108,
+  &quot;type&quot;: &quot;command-result&quot;,
+  &quot;file&quot;: &quot;opening-porch&quot;,
+  &quot;line&quot;: 0,
+  &quot;input&quot;: &quot;score&quot;,
+  &quot;passed&quot;: true,
+  &quot;expectedFailure&quot;: false,
+  &quot;skipped&quot;: false,
+  &quot;actualOutput&quot;: &quot;You have scored 10 out of 20, earning you the rank of a Sexton.&quot;,
+  &quot;turn&quot;: 15,
+  &quot;world&quot;: {
+    &quot;location&quot;: {
+      &quot;name&quot;: &quot;Bell Loft&quot;,
+      &quot;token&quot;: &quot;loft&quot;
+    },
+    &quot;inventory&quot;: [
+      {
+        &quot;name&quot;: &quot;brass key&quot;,
+        &quot;token&quot;: &quot;key&quot;
+      }
+    ]
+  },
+  &quot;assertionResults&quot;: [
+    {
+      &quot;description&quot;: &quot;contains \&quot;You have scored 10 out of 20\&quot;&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}</pre><pre class="raw-json">{
+  &quot;type&quot;: &quot;turn&quot;,
+  &quot;command&quot;: &quot;score&quot;,
+  &quot;assertions&quot;: {
+    &quot;contains&quot;: [
+      &quot;You have scored 10 out of 20&quot;
+    ]
+  }
+}</pre></details></div></details></div></details></li><li class="turn" data-status="pass"><details class="turn-detail" data-status="pass"><summary class="turn-row"><span class="turn-tcount">T:15</span><span class="turn-cmd">&gt; pull blue rope</span><span class="turn-room">Bell Loft</span><span class="turn-inv" title="brass key">1 carried</span><span class="turn-asserts"><span class="pass">&#10003; 3/3</span></span></summary><div class="turn-body"><pre class="turn-response">You pull the blue rope. The third bell joins the other two, and for a long moment <span class="hl" data-asserts="0">the tower holds a single chord</span> over the wet fields. Below, the rain eases. <span class="hl" data-asserts="1">Hello, Chord.</span>
 
-You have risen to the rank of a Bell-Ringer.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;the tower holds a single chord&quot;</li><li class="pass">&#10003; contains &quot;Hello, Chord.&quot;</li><li class="pass">&#10003; contains &quot;You have risen to the rank of a Bell-Ringer.&quot;</li></ul></article></section><section class="line"><h2>bell-loft · pull white rope</h2><article class="card pass"><div class="cmd">&#9989; &gt; pull white rope</div><pre class="out">You give the white rope a tug, then stop. The hymn board was clear about the order: red first.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;The hymn board was clear about the order: red first.&quot;</li><li class="pass">&#10003; state the white rope is slack</li></ul></article><article class="card pass"><div class="cmd">&#9989; &gt; pull blue rope</div><pre class="out">Your hand closes on the blue rope and hesitates. Red, then white, then blue. The board was specific.</pre><ul class="asserts"><li class="pass">&#10003; contains &quot;Red, then white, then blue. The board was specific.&quot;</li></ul></article></section>
-</div>
-
+<span class="hl" data-asserts="2">You have risen to the rank of a Bell-Ringer.</span></pre><details class="turn-extras"><summary class="turn-extras-summary">3 checks &#10003; &middot; Bell Loft &middot; 1 carried &middot; raw</summary><div class="turn-extras-body"><h4>Checks</h4><ul class="assertions"><li class="pass"><span class="kind">contains</span><span class="label">the tower holds a single chord</span><button type="button" class="match-toggle" data-assertion-idx="0">show</button></li><li class="pass"><span class="kind">contains</span><span class="label">Hello, Chord.</span><button type="button" class="match-toggle" data-assertion-idx="1">show</button></li><li class="pass"><span class="kind">contains</span><span class="label">You have risen to the rank of a Bell-Ringer.</span><button type="button" class="match-toggle" data-assertion-idx="2">show</button></li></ul><h4>World after this turn</h4><dl class="kv"><dt>Location</dt><dd>Bell Loft</dd><dt>Carrying</dt><dd>brass key</dd></dl><details class="raw"><summary>Raw: the runner record and the authored card</summary><pre class="raw-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;seq&quot;: 18,
+  &quot;elapsedMs&quot;: 110,
+  &quot;type&quot;: &quot;command-result&quot;,
+  &quot;file&quot;: &quot;opening-porch&quot;,
+  &quot;line&quot;: 0,
+  &quot;input&quot;: &quot;pull blue rope&quot;,
+  &quot;passed&quot;: true,
+  &quot;expectedFailure&quot;: false,
+  &quot;skipped&quot;: false,
+  &quot;actualOutput&quot;: &quot;You pull the blue rope. The third bell joins the other two, and for a long moment the tower holds a single chord over the wet fields. Below, the rain eases. Hello, Chord.\n\nYou have risen to the rank of a Bell-Ringer.&quot;,
+  &quot;turn&quot;: 15,
+  &quot;ending&quot;: &quot;victory&quot;,
+  &quot;world&quot;: {
+    &quot;location&quot;: {
+      &quot;name&quot;: &quot;Bell Loft&quot;,
+      &quot;token&quot;: &quot;loft&quot;
+    },
+    &quot;inventory&quot;: [
+      {
+        &quot;name&quot;: &quot;brass key&quot;,
+        &quot;token&quot;: &quot;key&quot;
+      }
+    ]
+  },
+  &quot;assertionResults&quot;: [
+    {
+      &quot;description&quot;: &quot;contains \&quot;the tower holds a single chord\&quot;&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;description&quot;: &quot;contains \&quot;Hello, Chord.\&quot;&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;description&quot;: &quot;contains \&quot;You have risen to the rank of a Bell-Ringer.\&quot;&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}</pre><pre class="raw-json">{
+  &quot;type&quot;: &quot;turn&quot;,
+  &quot;command&quot;: &quot;pull blue rope&quot;,
+  &quot;assertions&quot;: {
+    &quot;contains&quot;: [
+      &quot;the tower holds a single chord&quot;,
+      &quot;Hello, Chord.&quot;,
+      &quot;You have risen to the rank of a Bell-Ringer.&quot;
+    ]
+  }
+}</pre></details></div></details></div></details></li></ul></div></details><details class="test" id="line-1" data-status="pass"><summary class="test-summary"><span class="glyph pass">&#10003;</span><span class="test-name">bell-loft · pull white rope</span><span class="test-summary-meta">branch &middot; 2 cards &middot; 2/2 &#10003; &middot; 5 ms</span></summary><div class="test-body"><div class="line-note">Replays <a href="#line-0">opening-porch</a> through T:11 <code>&gt; up</code> (11 commands replayed, none re-asserted), then diverges.</div><ul class="transcript"><li class="turn" data-status="pass"><details class="turn-detail" data-status="pass"><summary class="turn-row"><span class="turn-tcount">T:12</span><span class="turn-cmd">&gt; pull white rope</span><span class="turn-room">Bell Loft</span><span class="turn-inv" title="brass key">1 carried</span><span class="turn-asserts"><span class="pass">&#10003; 2/2</span></span></summary><div class="turn-body"><pre class="turn-response">You give the white rope a tug, then stop. <span class="hl" data-asserts="0">The hymn board was clear about the order: red first.</span></pre><details class="turn-extras"><summary class="turn-extras-summary">2 checks &#10003; &middot; Bell Loft &middot; 1 carried &middot; raw</summary><div class="turn-extras-body"><h4>Checks</h4><ul class="assertions"><li class="pass"><span class="kind">contains</span><span class="label">The hymn board was clear about the order: red first.</span><button type="button" class="match-toggle" data-assertion-idx="0">show</button></li><li class="pass"><span class="kind">state</span><span class="label">the white rope is slack</span></li></ul><h4>World after this turn</h4><dl class="kv"><dt>Location</dt><dd>Bell Loft</dd><dt>Carrying</dt><dd>brass key</dd></dl><details class="raw"><summary>Raw: the runner record and the authored card</summary><pre class="raw-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;seq&quot;: 21,
+  &quot;elapsedMs&quot;: 150,
+  &quot;type&quot;: &quot;command-result&quot;,
+  &quot;file&quot;: &quot;bell-loft · pull white rope&quot;,
+  &quot;line&quot;: 0,
+  &quot;input&quot;: &quot;pull white rope&quot;,
+  &quot;passed&quot;: true,
+  &quot;expectedFailure&quot;: false,
+  &quot;skipped&quot;: false,
+  &quot;actualOutput&quot;: &quot;You give the white rope a tug, then stop. The hymn board was clear about the order: red first.&quot;,
+  &quot;turn&quot;: 12,
+  &quot;world&quot;: {
+    &quot;location&quot;: {
+      &quot;name&quot;: &quot;Bell Loft&quot;,
+      &quot;token&quot;: &quot;loft&quot;
+    },
+    &quot;inventory&quot;: [
+      {
+        &quot;name&quot;: &quot;brass key&quot;,
+        &quot;token&quot;: &quot;key&quot;
+      }
+    ]
+  },
+  &quot;assertionResults&quot;: [
+    {
+      &quot;description&quot;: &quot;contains \&quot;The hymn board was clear about the order: red first.\&quot;&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;description&quot;: &quot;state the white rope is slack&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}</pre><pre class="raw-json">{
+  &quot;type&quot;: &quot;turn&quot;,
+  &quot;command&quot;: &quot;pull white rope&quot;,
+  &quot;assertions&quot;: {
+    &quot;contains&quot;: [
+      &quot;The hymn board was clear about the order: red first.&quot;
+    ],
+    &quot;states&quot;: [
+      &quot;the white rope is slack&quot;
+    ]
+  }
+}</pre></details></div></details></div></details></li><li class="turn" data-status="pass"><details class="turn-detail" data-status="pass"><summary class="turn-row"><span class="turn-tcount">T:13</span><span class="turn-cmd">&gt; pull blue rope</span><span class="turn-room">Bell Loft</span><span class="turn-inv" title="brass key">1 carried</span><span class="turn-asserts"><span class="pass">&#10003; 1/1</span></span></summary><div class="turn-body"><pre class="turn-response">Your hand closes on the blue rope and hesitates. <span class="hl" data-asserts="0">Red, then white, then blue. The board was specific.</span></pre><details class="turn-extras"><summary class="turn-extras-summary">1 check &#10003; &middot; Bell Loft &middot; 1 carried &middot; raw</summary><div class="turn-extras-body"><h4>Checks</h4><ul class="assertions"><li class="pass"><span class="kind">contains</span><span class="label">Red, then white, then blue. The board was specific.</span><button type="button" class="match-toggle" data-assertion-idx="0">show</button></li></ul><h4>World after this turn</h4><dl class="kv"><dt>Location</dt><dd>Bell Loft</dd><dt>Carrying</dt><dd>brass key</dd></dl><details class="raw"><summary>Raw: the runner record and the authored card</summary><pre class="raw-json">{
+  &quot;schemaVersion&quot;: 2,
+  &quot;seq&quot;: 22,
+  &quot;elapsedMs&quot;: 152,
+  &quot;type&quot;: &quot;command-result&quot;,
+  &quot;file&quot;: &quot;bell-loft · pull white rope&quot;,
+  &quot;line&quot;: 0,
+  &quot;input&quot;: &quot;pull blue rope&quot;,
+  &quot;passed&quot;: true,
+  &quot;expectedFailure&quot;: false,
+  &quot;skipped&quot;: false,
+  &quot;actualOutput&quot;: &quot;Your hand closes on the blue rope and hesitates. Red, then white, then blue. The board was specific.&quot;,
+  &quot;turn&quot;: 13,
+  &quot;world&quot;: {
+    &quot;location&quot;: {
+      &quot;name&quot;: &quot;Bell Loft&quot;,
+      &quot;token&quot;: &quot;loft&quot;
+    },
+    &quot;inventory&quot;: [
+      {
+        &quot;name&quot;: &quot;brass key&quot;,
+        &quot;token&quot;: &quot;key&quot;
+      }
+    ]
+  },
+  &quot;assertionResults&quot;: [
+    {
+      &quot;description&quot;: &quot;contains \&quot;Red, then white, then blue. The board was specific.\&quot;&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}</pre><pre class="raw-json">{
+  &quot;type&quot;: &quot;turn&quot;,
+  &quot;command&quot;: &quot;pull blue rope&quot;,
+  &quot;assertions&quot;: {
+    &quot;contains&quot;: [
+      &quot;Red, then white, then blue. The board was specific.&quot;
+    ]
+  }
+}</pre></details></div></details></div></details></li></ul></div></details></div></div>
+<script>
+(function () {
+  // "show" on a check highlights what it matched in the prose; radio-style per card.
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('.match-toggle');
+    if (!btn) return;
+    var turn = btn.closest('.turn-detail');
+    if (!turn) return;
+    var idx = btn.getAttribute('data-assertion-idx');
+    var wasActive = btn.classList.contains('active');
+    turn.querySelectorAll('.match-toggle.active').forEach(function (b) { b.classList.remove('active'); });
+    turn.querySelectorAll('.hl.hl-active').forEach(function (s) { s.classList.remove('hl-active'); });
+    if (wasActive) return;
+    btn.classList.add('active');
+    turn.querySelectorAll('.hl').forEach(function (span) {
+      var ids = (span.getAttribute('data-asserts') || '').split(' ');
+      if (ids.indexOf(idx) >= 0) span.classList.add('hl-active');
+    });
+  });
+  var all = function (sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); };
+  document.getElementById('expand-all').addEventListener('click', function () {
+    all('details').forEach(function (d) { d.open = true; });
+  });
+  document.getElementById('collapse-all').addEventListener('click', function () {
+    all('details').forEach(function (d) { d.open = false; });
+  });
+  document.getElementById('failures-only').addEventListener('change', function (e) {
+    document.body.classList.toggle('failures-only', e.target.checked);
+  });
+  var hint = document.getElementById('filter-hint');
+  document.getElementById('filter').addEventListener('input', function (e) {
+    var q = e.target.value.trim().toLowerCase();
+    var shown = 0, total = 0;
+    all('li.turn').forEach(function (li) {
+      total += 1;
+      var hit = !q || (li.textContent || '').toLowerCase().indexOf(q) >= 0;
+      li.classList.toggle('filtered-out', !hit);
+      if (hit) shown += 1;
+      if (hit && q.length >= 2) { var d = li.querySelector('details.turn-detail'); if (d) d.open = true; }
+    });
+    all('details.test').forEach(function (t) {
+      var visible = t.querySelectorAll('li.turn:not(.filtered-out)').length;
+      t.classList.toggle('filtered-out', !!q && !visible);
+      if (q && visible) t.open = true;
+    });
+    hint.textContent = q ? shown + ' of ' + total + ' cards match' : '';
+  });
+})();
+</script>
 <script src="theme-listener.js"></script>
 <script>
-ThemeListener.init({
-  buildCSS: function(g, sb) {
-    return 'body { background: ' + g.bodyBg + ' !important; color: ' + g.bufferFg + ' !important; }\n' +
-      'header, .meta { color: ' + g.gridFg + ' !important; border-color: ' + g.gridBg + ' !important; }\n' +
-      'pre, code { color: ' + g.bufferFg + ' !important; font-family: ' + g.monoFamily + ' !important; }\n' +
-      '.ln { color: ' + g.gridFg + ' !important; }\n' +
-      '.cmd { color: ' + g.inputFg + ' !important; }\n' +
+if (window.ThemeListener) ThemeListener.init({
+  buildCSS: function (g, sb) {
+    return ':root { --bg: ' + g.bodyBg + ' !important; --fg: ' + g.bufferFg + ' !important; --muted: ' + g.gridFg +
+      ' !important; --accent: ' + g.inputFg + ' !important; --code-bg: ' + g.bufferBg + ' !important; --line: ' + g.gridBg +
+      ' !important; --mono: ' + g.monoFamily + ' !important; }\n' +
+      'body { background: ' + g.bodyBg + ' !important; color: ' + g.bufferFg + ' !important; }\n' +
       '* { scrollbar-color: ' + sb.thumb + ' ' + sb.track + '; }\n';
   },
   dispatchResize: false
 });
 </script>
-
 </body>
 </html>
