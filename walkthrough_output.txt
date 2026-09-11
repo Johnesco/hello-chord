@@ -181,12 +181,3 @@ The white rope is fixed in place.
 You pull the blue rope. The third bell joins the other two, and for a long moment the tower holds a single chord over the wet fields. Below, the rain eases. Hello, Chord.
 
 You have risen to the rank of a Bell-Ringer.
-
-> take blue rope
-Error: Engine is not running
-
-> score
-Error: Engine is not running
-
-> pull blue rope
-Error: Engine is not running
