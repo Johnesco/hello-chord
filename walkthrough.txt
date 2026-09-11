@@ -17,7 +17,6 @@ x iron hook
 look on iron hook
 x hook
 x brass key
-i
 x key
 take key
 west
@@ -53,5 +52,4 @@ take white rope
 pull blue rope
 take blue rope
 score
-inventory
 pull blue rope

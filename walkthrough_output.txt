@@ -73,9 +73,6 @@ On the iron hook you see a brass key.
 > x brass key
 A small brass key, worn smooth. A paper tag reads LOFT.
 
-> i
-You aren't carrying anything.
-
 > x key
 A small brass key, worn smooth. A paper tag reads LOFT.
 
@@ -189,9 +186,6 @@ You have risen to the rank of a Bell-Ringer.
 Error: Engine is not running
 
 > score
-Error: Engine is not running
-
-> inventory
 Error: Engine is not running
 
 > pull blue rope

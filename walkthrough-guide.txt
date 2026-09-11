@@ -7,7 +7,7 @@
 # to, and any verb the story defines itself. Refusals are coverage too
 # — taking scenery should fail, and the transcript records that it did.
 #
-# 4 of 4 rooms swept, 9 of 11 things exercised, 57 commands.
+# 4 of 4 rooms swept, 9 of 11 things exercised, 55 commands.
 #
 # Not exercised — held inside a closed thing, carried from the
 # start, or the player character itself: Rowan, hatch.
@@ -39,7 +39,6 @@
 > look on iron hook
 > x hook
 > x brass key
-> i
 > x key
 > take key
 
@@ -93,5 +92,4 @@
 > pull blue rope
 > take blue rope
 > score
-> inventory
 > pull blue rope
