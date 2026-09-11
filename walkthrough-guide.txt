@@ -1,0 +1,97 @@
+# hello-chord — full-coverage walkthrough
+#
+# Not a completion walkthrough. It follows the solved path through the
+# story, and the first time the player stands in each room it exercises
+# every thing there the way that thing's traits allow: examine, read,
+# open and close, switch on and off, look inside, take and drop, talk
+# to, and any verb the story defines itself. Refusals are coverage too
+# — taking scenery should fail, and the transcript records that it did.
+#
+# 4 of 4 rooms swept, 9 of 11 things exercised, 57 commands.
+#
+# Not exercised — held inside a closed thing, carried from the
+# start, or the player character itself: Rowan, hatch.
+
+## Porch
+
+> look
+> south
+
+## Nave
+
+> north
+> x hymn board
+> read hymn board
+> x board
+> x pews
+> x pew
+> x altar
+> x table
+> x ladder
+> x rungs
+> read board
+> up
+
+## Vestry
+
+> east
+> x iron hook
+> look on iron hook
+> x hook
+> x brass key
+> i
+> x key
+> take key
+
+## Nave
+
+> west
+> unlock hatch with key
+> open hatch
+
+## Bell Loft
+
+> up
+> x red rope
+> x red
+> x white rope
+> x white
+> x blue rope
+> x blue
+> pull red rope
+> pull red rope
+> pull white rope
+> score
+
+## Nave
+
+> down
+> take hymn board
+> take pews
+> take altar
+> take ladder
+
+## Vestry
+
+> east
+> take iron hook
+> take brass key
+> drop brass key
+
+## Nave
+
+> west
+> open hatch
+
+## Bell Loft
+
+> up
+> pull red rope
+> take red rope
+> pull white rope
+> take white rope
+> pull blue rope
+> take blue rope
+> score
+> inventory
+> pull blue rope

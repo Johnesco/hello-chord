@@ -1,15 +1,57 @@
+look
 south
 north
+x hymn board
+read hymn board
+x board
+x pews
+x pew
+x altar
+x table
+x ladder
+x rungs
 read board
 up
 east
+x iron hook
+look on iron hook
+x hook
+x brass key
+i
+x key
 take key
 west
 unlock hatch with key
 open hatch
 up
+x red rope
+x red
+x white rope
+x white
+x blue rope
+x blue
 pull red rope
 pull red rope
 pull white rope
 score
+down
+take hymn board
+take pews
+take altar
+take ladder
+east
+take iron hook
+take brass key
+drop brass key
+west
+open hatch
+up
+pull red rope
+take red rope
+pull white rope
+take white rope
+pull blue rope
+take blue rope
+score
+inventory
 pull blue rope

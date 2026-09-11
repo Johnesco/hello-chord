@@ -1,0 +1,14 @@
+{
+  "generated": "derived from the story source",
+  "commands": 57,
+  "understood": 57,
+  "misses": 0,
+  "rooms_swept": 4,
+  "rooms_total": 4,
+  "things_covered": 9,
+  "things_total": 11,
+  "uncovered": [
+    "Rowan",
+    "hatch"
+  ]
+}

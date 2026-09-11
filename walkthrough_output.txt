@@ -1,12 +1,46 @@
 Porch
 The rain has chased you under the porch of a small stone church. Somewhere above, a bell tower waits for someone to give it a reason.
 
+> look
+Porch
+A narrow stone porch, dry only by comparison. The church door stands open to the north. The rain is to the south, and it is not letting up.
+
 > south
 You look out at the rain. The rain looks back. Not yet.
 
 > north
 Nave
 Rows of pews face a plain altar. A hymn board hangs on a pillar. A small door in the corner leads east to the vestry, and a ladder climbs to a hatch in the ceiling.
+
+> x hymn board
+A wooden board of movable numbers, the kind that lists the hymns for the day. Someone has slid in a different sort of instruction.
+
+> read hymn board
+The board reads, in worn brass numerals and a scrap of paper:
+TODAY: NO HYMNS.
+RING THE RED, THEN THE WHITE, THEN THE BLUE.
+THE KEY IS ON THE HOOK.
+
+> x board
+A wooden board of movable numbers, the kind that lists the hymns for the day. Someone has slid in a different sort of instruction.
+
+> x pews
+Dark oak pews, polished by generations of fidgeting.
+
+> x pew
+Dark oak pews, polished by generations of fidgeting.
+
+> x altar
+A plain stone altar with nothing on it.
+
+> x table
+A plain stone altar with nothing on it.
+
+> x ladder
+A wooden ladder bolted to the wall, rising to the hatch.
+
+> x rungs
+A wooden ladder bolted to the wall, rising to the hatch.
 
 > read board
 The board reads, in worn brass numerals and a scrap of paper:
@@ -22,6 +56,28 @@ Vestry
 A cramped room smelling of candle wax and damp wool. An iron hook is screwed into the wall at eye height. The nave is back to the west.
 
 On the iron hook you see a brass key.
+
+> x iron hook
+An iron hook, the plain kind meant for a coat or a key.
+
+On the iron hook you see a brass key.
+
+> look on iron hook
+I don't understand that.
+
+> x hook
+An iron hook, the plain kind meant for a coat or a key.
+
+On the iron hook you see a brass key.
+
+> x brass key
+A small brass key, worn smooth. A paper tag reads LOFT.
+
+> i
+You aren't carrying anything.
+
+> x key
+A small brass key, worn smooth. A paper tag reads LOFT.
 
 > take key
 You take the brass key from the iron hook.
@@ -42,6 +98,24 @@ You climb through the hatch into the loft. Three ropes hang in a row, each risin
 
 You have risen to the rank of a Sexton.
 
+> x red rope
+A thick rope wound in red wool, tied off at waist height.
+
+> x red
+A thick rope wound in red wool, tied off at waist height.
+
+> x white rope
+A rope wound in white wool, hanging beside the red one.
+
+> x white
+A rope wound in white wool, hanging beside the red one.
+
+> x blue rope
+A rope wound in blue wool, the last in the row.
+
+> x blue
+A rope wound in blue wool, the last in the row.
+
 > pull red rope
 You haul on the red rope. Far above, a deep bell answers: one low, round note that goes on longer than seems reasonable.
 
@@ -54,7 +128,71 @@ You pull the white rope. A second bell rings out, higher, and the two notes hang
 > score
 You have scored 10 out of 20, earning you the rank of a Sexton.
 
+> down
+Nave
+Rows of pews face a plain altar. A hymn board hangs on a pillar. A small door in the corner leads east to the vestry, and a ladder climbs to a hatch in the ceiling.
+
+> take hymn board
+The hymn board is fixed in place.
+
+> take pews
+The pews are fixed in place.
+
+> take altar
+The altar is fixed in place.
+
+> take ladder
+The ladder is fixed in place.
+
+> east
+Vestry
+A cramped room smelling of candle wax and damp wool. An iron hook is screwed into the wall at eye height. The nave is back to the west.
+
+> take iron hook
+The iron hook is fixed in place.
+
+> take brass key
+You already have the brass key.
+
+> drop brass key
+Dropped.
+
+> west
+Nave
+Rows of pews face a plain altar. A hymn board hangs on a pillar. A small door in the corner leads east to the vestry, and a ladder climbs to a hatch in the ceiling.
+
+> open hatch
+The hatch is already open.
+
+> up
+Bell Loft
+A square wooden loft under the bells. Three ropes hang here: a red one, a white one, and a blue one. The hatch leads back down.
+
+> pull red rope
+The red rope is still swinging gently. Its bell has said its piece.
+
+> take red rope
+The red rope is fixed in place.
+
+> pull white rope
+The white rope is already swinging. One note per bell, for now.
+
+> take white rope
+The white rope is fixed in place.
+
 > pull blue rope
 You pull the blue rope. The third bell joins the other two, and for a long moment the tower holds a single chord over the wet fields. Below, the rain eases. Hello, Chord.
 
 You have risen to the rank of a Bell-Ringer.
+
+> take blue rope
+Error: Engine is not running
+
+> score
+Error: Engine is not running
+
+> inventory
+Error: Engine is not running
+
+> pull blue rope
+Error: Engine is not running
