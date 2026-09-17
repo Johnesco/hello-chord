@@ -51,7 +51,19 @@
     { "type": "turn", "command": "pull white rope",
       "assertions": { "contains": ["A second bell rings out, higher"], "states": ["the white rope is pulled"] } },
     { "type": "turn", "command": "score",
-      "assertions": { "contains": ["You have scored 10 out of 20"] } },
+      "assertions": { "contains": ["You have scored 10 out of 20"] },
+      "branches": [
+        { "branch": 2, "cards": [
+          { "type": "turn", "command": "pull blue rope",
+            "assertions": { "contains": ["the tower holds a single chord", "Hello, Chord.", "You have risen to the rank of a Bell-Ringer."] } },
+          { "type": "turn", "command": "look",
+            "assertions": { "contains": ["The game has ended"] } },
+          { "type": "turn", "command": "restart",
+            "assertions": { "contains": ["The story restarts."] } },
+          { "type": "turn", "command": "look",
+            "assertions": { "contains": ["Porch"], "notContains": ["The game has ended"] } }
+        ] }
+      ] },
     { "type": "turn", "command": "pull blue rope",
       "assertions": { "contains": ["the tower holds a single chord", "Hello, Chord.", "You have risen to the rank of a Bell-Ringer."] } }
   ]
