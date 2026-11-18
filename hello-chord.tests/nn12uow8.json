@@ -1,0 +1,42 @@
+{
+  "cards": [
+    {
+      "assertions": {
+        "contains": [
+          "the tower holds a single chord",
+          "Hello, Chord.",
+          "You have risen to the rank of a Bell-Ringer."
+        ]
+      },
+      "command": "pull blue rope",
+      "id": "vvpzj38t",
+      "type": "turn"
+    },
+    {
+      "assertions": {
+        "contains": [
+          "The story restarts."
+        ]
+      },
+      "command": "restart",
+      "id": "ff19vetr",
+      "type": "turn"
+    },
+    {
+      "assertions": {
+        "contains": [
+          "Porch"
+        ],
+        "notContains": [
+          "The game has ended"
+        ]
+      },
+      "command": "look",
+      "id": "l6lyjxih",
+      "type": "turn"
+    }
+  ],
+  "id": "nn12uow8",
+  "ordinal": 1,
+  "parent": "ak0ewv34"
+}

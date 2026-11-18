@@ -1,0 +1,30 @@
+{
+  "cards": [
+    {
+      "assertions": {
+        "contains": [
+          "The hymn board was clear about the order: red first."
+        ],
+        "states": [
+          "the white rope is slack"
+        ]
+      },
+      "command": "pull white rope",
+      "id": "riyfeuga",
+      "type": "turn"
+    },
+    {
+      "assertions": {
+        "contains": [
+          "Red, then white, then blue. The board was specific."
+        ]
+      },
+      "command": "pull blue rope",
+      "id": "yalau3n4",
+      "type": "turn"
+    }
+  ],
+  "id": "nv3wuix0",
+  "ordinal": 1,
+  "parent": "dkk1syxr"
+}

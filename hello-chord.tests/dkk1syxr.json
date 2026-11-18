@@ -1,0 +1,142 @@
+{
+  "cards": [
+    {
+      "assertions": {
+        "channels": [
+          {
+            "id": "info.title",
+            "is": "Hello Chord"
+          },
+          {
+            "id": "info.description",
+            "is": "A locked loft, three bell ropes, and one chord to ring before the rain stops."
+          }
+        ]
+      },
+      "id": "7x1uj2bf",
+      "type": "opening"
+    },
+    {
+      "assertions": {
+        "contains": [
+          "Porch",
+          "The rain has chased you under the porch of a small stone church."
+        ]
+      },
+      "id": "xdp84a17",
+      "type": "boot"
+    },
+    {
+      "assertions": {
+        "contains": [
+          "You look out at the rain. The rain looks back. Not yet."
+        ]
+      },
+      "command": "south",
+      "id": "lmixlut6",
+      "type": "turn"
+    },
+    {
+      "assertions": {
+        "contains": [
+          "Nave",
+          "A hymn board hangs on a pillar."
+        ]
+      },
+      "command": "north",
+      "id": "ugdu8gj3",
+      "type": "turn"
+    },
+    {
+      "assertions": {
+        "contains": [
+          "RING THE RED, THEN THE WHITE, THEN THE BLUE.",
+          "THE KEY IS ON THE HOOK."
+        ]
+      },
+      "command": "read board",
+      "id": "e7ps1zg7",
+      "type": "turn"
+    },
+    {
+      "assertions": {
+        "contains": [
+          "The hatch is locked."
+        ]
+      },
+      "command": "up",
+      "id": "q0188ow8",
+      "type": "turn"
+    },
+    {
+      "assertions": {
+        "contains": [
+          "Vestry",
+          "On the iron hook you see a brass key."
+        ]
+      },
+      "command": "east",
+      "id": "g9uuqpca",
+      "type": "turn"
+    },
+    {
+      "assertions": {
+        "contains": [
+          "You take the brass key from the iron hook."
+        ],
+        "states": [
+          "player.inventory contains brass key"
+        ]
+      },
+      "command": "take key",
+      "id": "d82kr17i",
+      "type": "turn"
+    },
+    {
+      "assertions": {
+        "contains": [
+          "Nave"
+        ]
+      },
+      "command": "west",
+      "id": "i1f68qrv",
+      "type": "turn"
+    },
+    {
+      "assertions": {
+        "contains": [
+          "You unlock the hatch with the brass key."
+        ]
+      },
+      "command": "unlock hatch with key",
+      "id": "e31n1oor",
+      "type": "turn"
+    },
+    {
+      "assertions": {
+        "contains": [
+          "You open the hatch."
+        ]
+      },
+      "command": "open hatch",
+      "id": "44s6ko8m",
+      "type": "turn"
+    },
+    {
+      "assertions": {
+        "contains": [
+          "Bell Loft",
+          "Three ropes hang in a row",
+          "You have risen to the rank of a Sexton."
+        ],
+        "states": [
+          "player.location = Bell Loft"
+        ]
+      },
+      "command": "up",
+      "id": "ksha3epn",
+      "type": "turn"
+    }
+  ],
+  "id": "dkk1syxr"
+}

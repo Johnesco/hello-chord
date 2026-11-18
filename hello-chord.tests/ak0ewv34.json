@@ -1,0 +1,53 @@
+{
+  "cards": [
+    {
+      "assertions": {
+        "contains": [
+          "a deep bell answers"
+        ],
+        "states": [
+          "the red rope is pulled"
+        ]
+      },
+      "command": "pull red rope",
+      "id": "axfsvex5",
+      "type": "turn"
+    },
+    {
+      "assertions": {
+        "contains": [
+          "Its bell has said its piece."
+        ]
+      },
+      "command": "pull red rope",
+      "id": "u4ugglv9",
+      "type": "turn"
+    },
+    {
+      "assertions": {
+        "contains": [
+          "A second bell rings out, higher"
+        ],
+        "states": [
+          "the white rope is pulled"
+        ]
+      },
+      "command": "pull white rope",
+      "id": "pcmdntp2",
+      "type": "turn"
+    },
+    {
+      "assertions": {
+        "contains": [
+          "You have scored 10 out of 20"
+        ]
+      },
+      "command": "score",
+      "id": "z8a4bcnh",
+      "type": "turn"
+    }
+  ],
+  "id": "ak0ewv34",
+  "ordinal": 0,
+  "parent": "dkk1syxr"
+}

@@ -34,7 +34,7 @@ hello-chord/
 ├── CLAUDE.md                THIS FILE
 ├── README.md                public documentation
 ├── hello-chord.story        the game, one Chord file
-├── hello-chord.tests.json   tests document: the main line to the win, one branch of wrong-order pulls
+├── hello-chord.tests/      tests document: the main line to the win, one branch of wrong-order pulls
 ├── hello-chord.config.json  IFID
 ├── ifhub.conf               the IF Hub card
 ├── browser/hello-chord.css  author CSS override, loaded last
@@ -58,7 +58,7 @@ Built output at the root (`play.html`, `game.js`, `*.css`, `lib/themes/`, `theme
 - [x] Four rooms, blocked exit south, first-visit text in the Porch and the Bell Loft
 - [x] Key on a hook, lockable hatch, three ropes in order, win with a final phrase
 - [x] Scoring, ranks, SCORE
-- [x] Tests document: 19 cards, 33 assertions, one branch; `sharpee test` green
+- [x] Tests document: 22 cards, 40 assertions, two branches; `sharpee test` green
 - [x] Built, laid out, and shipped through `tools/build.py` and the hub's `ship.py`
 
 ### Planned
@@ -105,5 +105,6 @@ ADRs live in `docs/adr/` once the first one exists (index: `docs/adr/README.md`)
 ## Project History
 
 ### Recent Changes
+- 2026-11-18 (#1): moved to the current engine and the Chord 4 language. Every block names its kind first (`a thing`, `a supporter`), the hook's capacity is `holds 1`, and the tests document is the `hello-chord.tests/` directory (edit it through `@sharpee/branch-tester`, never by hand). The win card carries `ending`, and the old after-the-ending LOOK probe is gone: a command sent to a finished game is a test error now. 22 cards, 40 assertions. Built, not yet shipped.
 - 2026-09-07: Adopted into the workspace docs model (`tools/new_game.py --adopt`): this file, the sdlc-baseline GitHub templates, `scripts/setup-labels.sh`. Not yet shipped.
 - 2026-09-07: Written, tested, built, and shipped as the first Sharpee game through `tools/build.py` and IF Hub. The red rope needed `pullable` before its `on` clause could run.

@@ -1,0 +1,20 @@
+{
+  "cards": [
+    {
+      "assertions": {
+        "contains": [
+          "the tower holds a single chord",
+          "Hello, Chord.",
+          "You have risen to the rank of a Bell-Ringer."
+        ]
+      },
+      "command": "pull blue rope",
+      "ending": "hello-chord",
+      "id": "zov6oh8j",
+      "type": "turn"
+    }
+  ],
+  "id": "0vf8ym0d",
+  "ordinal": 0,
+  "parent": "ak0ewv34"
+}

@@ -87,6 +87,7 @@ create the hatch
   A square hatch in the ceiling with a keyhole set into its frame.
 
 create the hymn board
+  a thing
   aka board, hymn, hymns, numbers, pillar
   scenery, readable
   in the Nave
@@ -103,6 +104,7 @@ create the hymn board
   end on
 
 create the pews
+  a thing
   aka pew, benches, bench
   scenery, plural
   in the Nave
@@ -110,6 +112,7 @@ create the pews
   Dark oak pews, polished by generations of fidgeting.
 
 create the altar
+  a thing
   aka table
   scenery
   in the Nave
@@ -117,6 +120,7 @@ create the altar
   A plain stone altar with nothing on it.
 
 create the ladder
+  a thing
   aka rungs
   scenery
   in the Nave
@@ -124,13 +128,16 @@ create the ladder
   A wooden ladder bolted to the wall, rising to the hatch.
 
 create the iron hook
+  a supporter
   aka hook
-  scenery, a supporter with capacity 1
+  scenery
+  holds 1
   in the Vestry
 
   An iron hook, the plain kind meant for a coat or a key.
 
 create the brass key
+  a thing
   aka key
   on the iron hook
   score found-key worth 5
@@ -142,6 +149,7 @@ create the brass key
   end after
 
 create the red rope
+  a thing
   aka red, red bell rope, red bell
   scenery, pullable
   in the Bell Loft
@@ -158,6 +166,7 @@ create the red rope
   end on
 
 create the white rope
+  a thing
   aka white, white bell rope, white bell
   scenery, pullable
   in the Bell Loft
@@ -175,6 +184,7 @@ create the white rope
   end on
 
 create the blue rope
+  a thing
   aka blue, blue bell rope, blue bell
   scenery, pullable
   in the Bell Loft

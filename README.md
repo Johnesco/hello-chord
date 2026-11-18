@@ -12,7 +12,7 @@ build, test, and ship to [IF Hub](https://johnesco.github.io/ifhub/).
 | File | What it is |
 | --- | --- |
 | `hello-chord.story` | The whole game, one Chord file. |
-| `hello-chord.tests.json` | The tests document `sharpee test` replays: the main line through the win, plus one branch that pulls the ropes in the wrong order. |
+| `hello-chord.tests/` | The tests document `sharpee test` replays: the main line through the win, plus one branch that pulls the ropes in the wrong order. |
 | `hello-chord.config.json` | The IFID `sharpee init` minted. Publishing requires it. |
 | `ifhub.conf` | The IF Hub card: title, author, description, tags, source, walkthrough. |
 | `browser/hello-chord.css` | Author CSS, loaded after the engine and theme CSS. |
@@ -27,7 +27,7 @@ build, test, and ship to [IF Hub](https://johnesco.github.io/ifhub/).
 ```
 npx sharpee play                                 # play in the terminal
 npx sharpee compose --check hello-chord.story    # the load gates, nothing written
-npx sharpee test                                 # replay hello-chord.tests.json
+npx sharpee test                                 # replay hello-chord.tests/
 npx sharpee build                                # dist/web/hello-chord/ only
 
 python ../tools/build.py hello-chord --force     # gates, build, tests, lay out the hub folder
