@@ -11,20 +11,14 @@
             "id": "info.description",
             "is": "A locked loft, three bell ropes, and one chord to ring before the rain stops."
           }
-        ]
-      },
-      "id": "7x1uj2bf",
-      "type": "opening"
-    },
-    {
-      "assertions": {
+        ],
         "contains": [
           "Porch",
           "The rain has chased you under the porch of a small stone church."
         ]
       },
-      "id": "xdp84a17",
-      "type": "boot"
+      "id": "7x1uj2bf",
+      "type": "opening"
     },
     {
       "assertions": {
