@@ -105,7 +105,7 @@ ADRs live in `docs/adr/` once the first one exists (index: `docs/adr/README.md`)
 ## Project History
 
 ### Recent Changes
-- 2026-11-20 (#2): moved to the current engine. The opening is no longer a turn, so the tests tree's `boot` card is folded into its `opening` card; nothing in the story counts turns or relies on `emit` printing. In play, a command typed after the ending now answers "[The story has ended. RESTART, RESTORE or UNDO]". 21 cards, 40 assertions. On the `engine-5.7.1` branch, not yet merged or shipped.
+- 2026-11-20 (#2): moved to the current engine. The opening is no longer a turn, so the tests tree's `boot` card is folded into its `opening` card; nothing in the story counts turns or relies on `emit` printing. In play, a command typed after the ending now answers "[The story has ended. RESTART, RESTORE or UNDO]". 21 cards, 40 assertions. Merged and shipped 2026-11-22.
 - 2026-11-18 (#1): moved to the current engine and the Chord 4 language. Every block names its kind first (`a thing`, `a supporter`), the hook's capacity is `holds 1`, and the tests document is the `hello-chord.tests/` directory (edit it through `@sharpee/branch-tester`, never by hand). The win card carries `ending`, and the old after-the-ending LOOK probe is gone: a command sent to a finished game is a test error now. 22 cards, 40 assertions. Shipped 2026-11-20.
 - 2026-09-07: Adopted into the workspace docs model (`tools/new_game.py --adopt`): this file, the sdlc-baseline GitHub templates, `scripts/setup-labels.sh`. Not yet shipped.
 - 2026-09-07: Written, tested, built, and shipped as the first Sharpee game through `tools/build.py` and IF Hub. The red rope needed `pullable` before its `on` clause could run.
